@@ -123,7 +123,7 @@ All Rights Reserved.
 
 ### 🍽️ Brainyte POS Mobile App
 
-**Built with ❤️ using Flutter, Riverpod & Supabase**
+**Built with ❤️ using Flutter, Riverpod & PHP Backend**
 
 **Developed by Brainyte For Wells Interactive Services Ltd**
 
