@@ -1,7 +1,7 @@
 # 🍽️ Brainyte POS Mobile App
 
 <p align="center">
-  <img src="assets/logo.png" alt="Brainyte Logo" width="900"/>
+  <img src="assets/images/logo.png" alt="Brainyte Logo" width="900"/>
 </p>
 
 <p align="center">
