@@ -8,7 +8,6 @@ import '../../../core/repositories/menu_repository.dart';
 import '../../../core/repositories/order_repository.dart';
 import '../../../core/repositories/table_repository.dart';
 import '../../../core/utils/currency.dart';
-import '../../../widgets/app_button.dart';
 import '../../../widgets/empty_state.dart';
 import '../../../widgets/menu_card.dart';
 import '../../../widgets/order_tile.dart';
@@ -315,6 +314,345 @@ class _WaiterDashboardScreenState extends State<WaiterDashboardScreen> {
     );
   }
 
+  Widget _buildWideLayout(ThemeData theme) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Left Panel: Tables, Categories, Search, Menu Grid
+        Expanded(
+          flex: 3,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Table Selection
+              _buildTableSelector(),
+              const SizedBox(height: 12),
+              // Category Chips
+              _buildCategoryChips(),
+              const SizedBox(height: 12),
+              // Search Bar
+              TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: 'Search menu items...',
+                  prefixIcon: const Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                  filled: true,
+                  fillColor: Colors.grey.shade100,
+                ),
+                onChanged: (_) => setState(() {}),
+              ),
+              const SizedBox(height: 12),
+              // Menu Grid
+              Expanded(
+                child: _filteredMenu.isEmpty
+                    ? const EmptyState(
+                        title: 'No Menu Items',
+                        message: 'No items match your search or category filter.',
+                      )
+                    : GridView.builder(
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          childAspectRatio: 0.85,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                        ),
+                        itemCount: _filteredMenu.length,
+                        itemBuilder: (context, index) {
+                          final item = _filteredMenu[index];
+                          final qty = _cart[item.id] ?? 0;
+                          return MenuCard(
+                            item: item,
+                            quantity: qty,
+                            onAdd: () => _toggleQuantity(item.id, increment: true),
+                            onRemove: () => _toggleQuantity(item.id, increment: false),
+                          );
+                        },
+                      ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 12),
+        // Right Panel: Cart Sidebar
+        SizedBox(
+          width: 340,
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Table Selector
+                  DropdownButtonFormField<int>(
+                    initialValue: _selectedTableId,
+                    decoration: InputDecoration(
+                      labelText: 'Select Table',
+                      prefixIcon: const Icon(Icons.table_restaurant),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                    ),
+                    items: _tables.map((table) {
+                      return DropdownMenuItem<int>(
+                        value: table.id,
+                        child: Text('${table.name} (${table.status})'),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() => _selectedTableId = value);
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  Text('Order Items', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
+                  const SizedBox(height: 8),
+                  // Special Instructions
+                  TextField(
+                    controller: _instructionsController,
+                    decoration: InputDecoration(
+                      hintText: 'Special instructions...',
+                      prefixIcon: const Icon(Icons.notes, size: 20),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey.shade100,
+                    ),
+                    maxLines: 2,
+                  ),
+                  const SizedBox(height: 12),
+                  // Cart Items List
+                  Expanded(
+                    child: _cart.isEmpty
+                        ? const EmptyState(
+                            title: 'Cart Empty',
+                            message: 'Tap items from the menu to add them here.',
+                          )
+                        : ListView.builder(
+                            itemCount: _cart.entries.length,
+                            itemBuilder: (context, index) {
+                              final entry = _cart.entries.elementAt(index);
+                              final item = _menu.firstWhere(
+                                (menuItem) => menuItem.id == entry.key,
+                                orElse: () => const MenuItem(
+                                  id: 0, name: '', description: '', price: 0, category: '',
+                                ),
+                              );
+                              return OrderTile(
+                                item: item,
+                                quantity: entry.value,
+                                onIncrement: () => _toggleQuantity(item.id, increment: true),
+                                onDecrement: () => _toggleQuantity(item.id, increment: false),
+                                onRemove: () => setState(() => _cart.remove(item.id)),
+                              );
+                            },
+                          ),
+                  ),
+                  const Divider(height: 20),
+                  // Grand Total
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Grand Total', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 18)),
+                      Text(
+                        CurrencyFormatter.format(_grandTotal),
+                        style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 18, color: AppColors.primary),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  // Confirm Order Button
+                  SizedBox(
+                    height: 48,
+                    child: FilledButton.icon(
+                      onPressed: (_selectedTableId != null && _cart.isNotEmpty) ? _confirmOrder : null,
+                      icon: const Icon(Icons.check_circle),
+                      label: const Text('Confirm Order', style: TextStyle(fontSize: 16)),
+                      style: FilledButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildNarrowLayout(ThemeData theme) {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Table Selection - Horizontal Scroll
+          _buildTableSelector(),
+          const SizedBox(height: 12),
+          // Category Chips
+          _buildCategoryChips(),
+          const SizedBox(height: 12),
+          // Search Bar
+          TextField(
+            controller: _searchController,
+            decoration: InputDecoration(
+              hintText: 'Search menu items...',
+              prefixIcon: const Icon(Icons.search),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+              filled: true,
+              fillColor: Colors.grey.shade100,
+            ),
+            onChanged: (_) => setState(() {}),
+          ),
+          const SizedBox(height: 12),
+          // Menu Grid
+          ..._filteredMenu.isEmpty
+              ? [
+                  const EmptyState(
+                    title: 'No Menu Items',
+                    message: 'No items match your search or category filter.',
+                  ),
+                ]
+              : [
+                  GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 0.9,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                    ),
+                    itemCount: _filteredMenu.length,
+                    itemBuilder: (context, index) {
+                      final item = _filteredMenu[index];
+                      final qty = _cart[item.id] ?? 0;
+                      return MenuCard(
+                        item: item,
+                        quantity: qty,
+                        onAdd: () => _toggleQuantity(item.id, increment: true),
+                        onRemove: () => _toggleQuantity(item.id, increment: false),
+                      );
+                    },
+                  ),
+                ],
+          const SizedBox(height: 20),
+          // Quick Order Summary Strip
+          if (_cart.isNotEmpty)
+            Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Cart ($_cartItemsCount items)', style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16)),
+                        Text(
+                          CurrencyFormatter.format(_grandTotal),
+                          style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16, color: AppColors.primary),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      height: 44,
+                      child: FilledButton.icon(
+                        onPressed: _showCartBottomSheet,
+                        icon: const Icon(Icons.shopping_cart),
+                        label: const Text('View Cart & Confirm'),
+                        style: FilledButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTableSelector() {
+    return SizedBox(
+      height: 100,
+      child: _tables.isEmpty
+          ? const Center(child: Text('No tables available', style: TextStyle(color: Colors.grey)))
+          : ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: _tables.length,
+              separatorBuilder: (_, __) => const SizedBox(width: 8),
+              itemBuilder: (context, index) {
+                final table = _tables[index];
+                return SizedBox(
+                  width: 110,
+                  child: TableCard(
+                    table: table,
+                    isSelected: table.id == _selectedTableId,
+                    onTap: () => setState(() => _selectedTableId = table.id),
+                  ),
+                );
+              },
+            ),
+    );
+  }
+
+  Widget _buildCategoryChips() {
+    return SizedBox(
+      height: 44,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: _categories.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 6),
+        itemBuilder: (context, index) {
+          final category = _categories[index];
+          final isSelected = _selectedCategory == category['key'];
+          return FilterChip(
+            label: Text('${category['icon']} ${category['label']}'),
+            selected: isSelected,
+            onSelected: (_) => setState(() => _selectedCategory = category['key']!),
+            selectedColor: AppColors.primary.withValues(alpha: 0.15),
+            checkmarkColor: AppColors.primary,
+            labelStyle: TextStyle(
+              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+              fontSize: 13,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+              side: BorderSide(
+                color: isSelected ? AppColors.primary : Colors.grey.shade300,
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   void _showCartBottomSheet() {
     showModalBottomSheet(
       context: context,
@@ -347,6 +685,28 @@ class _WaiterDashboardScreenState extends State<WaiterDashboardScreen> {
                   const SizedBox(height: 16),
                   Text('Order Summary', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
                   const SizedBox(height: 12),
+                  // Table Selector in Bottom Sheet
+                  DropdownButtonFormField<int>(
+                    initialValue: _selectedTableId,
+                    decoration: InputDecoration(
+                      labelText: 'Select Table',
+                      prefixIcon: const Icon(Icons.table_restaurant),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                    ),
+                    items: _tables.map((table) {
+                      return DropdownMenuItem<int>(
+                        value: table.id,
+                        child: Text('${table.name} (${table.status})'),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() => _selectedTableId = value);
+                    },
+                  ),
+                  const SizedBox(height: 12),
                   TextField(
                     controller: _instructionsController,
                     decoration: const InputDecoration(
@@ -365,3 +725,61 @@ class _WaiterDashboardScreenState extends State<WaiterDashboardScreen> {
                             message: 'Tap menu items to add them here.',
                           )
                         : ListView.builder(
+                            controller: scrollController,
+                            itemCount: _cart.entries.length,
+                            itemBuilder: (context, index) {
+                              final entry = _cart.entries.elementAt(index);
+                              final item = _menu.firstWhere(
+                                (menuItem) => menuItem.id == entry.key,
+                                orElse: () => const MenuItem(
+                                  id: 0, name: '', description: '', price: 0, category: '',
+                                ),
+                              );
+                              return OrderTile(
+                                item: item,
+                                quantity: entry.value,
+                                onIncrement: () => _toggleQuantity(item.id, increment: true),
+                                onDecrement: () => _toggleQuantity(item.id, increment: false),
+                                onRemove: () => setState(() => _cart.remove(item.id)),
+                              );
+                            },
+                          ),
+                  ),
+                  const Divider(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Grand Total:', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 18)),
+                      Text(
+                        CurrencyFormatter.format(_grandTotal),
+                        style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 18, color: AppColors.primary),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    height: 48,
+                    child: FilledButton.icon(
+                      onPressed: (_selectedTableId != null && _cart.isNotEmpty) ? () {
+                        Navigator.pop(context);
+                        _confirmOrder();
+                      } : null,
+                      icon: const Icon(Icons.check_circle),
+                      label: const Text('Confirm Order', style: TextStyle(fontSize: 16)),
+                      style: FilledButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+}
