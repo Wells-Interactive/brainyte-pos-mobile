@@ -37,7 +37,7 @@ Designed for speed and simplicity, it enables restaurant staff to manage tables,
 * 📤 Send orders instantly
 * 🔄 Live order status updates
 * 📋 View active orders
-* 💰 Close customer tables
+* 💰 Open & Close customer tables
 * 📋 View active orders
 * 🖨️ Thermal Printing
 ---
@@ -69,7 +69,6 @@ Designed for speed and simplicity, it enables restaurant staff to manage tables,
 | --------------- | ---------- |
 | Flutter         | 3.44.3     |
 | Dart            | 3.12.2     |
-| Supabase        | Latest     |
 | Riverpod        | Latest     |
 | Material Design | Material 3 |
 ---
@@ -113,7 +112,7 @@ Contributions, ideas, bug reports, and feature requests are welcome.
 
 # 📄 License
 
-Copyright © Wells Interactive Services Ltd.
+Copyright © 2026 Wells Interactive Services Ltd.
 
 All Rights Reserved.
 
