@@ -8,4 +8,7 @@ class AuthService {
 
   Future<String?> getStoredRole() => repository.getStoredRole();
   Future<String?> getStoredUserName() => repository.getStoredUserName();
+
+  /// Check if user is currently authenticated.
+  bool get isAuthenticated => ApiClient.instance.isAuthenticated;
 }

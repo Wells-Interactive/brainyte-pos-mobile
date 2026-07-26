@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../core/api/api_client.dart';
-import '../../core/api/api_response.dart';
+import '../../core/api/endpoints.dart';
 import '../../core/constants/colors.dart';
 import '../../core/utils/currency.dart';
 import '../../widgets/loading_indicator.dart';
@@ -35,7 +35,11 @@ class _ManagerDashboardScreenState extends State<ManagerDashboardScreen> {
   }
 
   Future<void> _loadStats() async {
-    final result = await _apiClient.get('/API/Status/index.php?stats=1');
+    final result = await _apiClient.get<Map<String, dynamic>>(
+      Endpoints.v1Reports,
+      queryParameters: {'scope': 'day', 'top_items': 10},
+      onData: (data) => data,
+    );
     if (!mounted) return;
     if (result.success && result.data != null) {
       setState(() {
@@ -43,7 +47,17 @@ class _ManagerDashboardScreenState extends State<ManagerDashboardScreen> {
         _loading = false;
       });
     } else {
-      setState(() => _loading = false);
+      // Fallback to legacy
+      final legacyResult = await _apiClient.getLegacy('${Endpoints.legacyStatus}?stats=1');
+      if (!mounted) return;
+      if (legacyResult.success && legacyResult.data != null) {
+        setState(() {
+          _stats = legacyResult.data;
+          _loading = false;
+        });
+      } else {
+        setState(() => _loading = false);
+      }
     }
   }
 
@@ -129,7 +143,6 @@ class _ManagerDashboardScreenState extends State<ManagerDashboardScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Revenue Stats
           Text('Revenue Summary', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
           const SizedBox(height: 12),
           GridView.count(
@@ -146,8 +159,6 @@ class _ManagerDashboardScreenState extends State<ManagerDashboardScreen> {
             ],
           ),
           const SizedBox(height: 24),
-
-          // Order Stats
           Text('Order Statistics', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
           const SizedBox(height: 12),
           GridView.count(
@@ -165,8 +176,6 @@ class _ManagerDashboardScreenState extends State<ManagerDashboardScreen> {
             ],
           ),
           const SizedBox(height: 24),
-
-          // Table Status
           Text('Table Status', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
           const SizedBox(height: 12),
           SizedBox(
@@ -215,8 +224,6 @@ class _ManagerDashboardScreenState extends State<ManagerDashboardScreen> {
             ),
           ),
           const SizedBox(height: 24),
-
-          // Top Selling Items
           if (topItems.isNotEmpty) ...[
             Text('Top Selling Items', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
             const SizedBox(height: 12),
@@ -233,8 +240,6 @@ class _ManagerDashboardScreenState extends State<ManagerDashboardScreen> {
               ),
             ),
           ],
-
-          // Recent Orders
           if (sales.isNotEmpty) ...[
             const SizedBox(height: 24),
             Text('Recent Orders', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
@@ -295,4 +300,3 @@ class _StatCard extends StatelessWidget {
     );
   }
 }
-

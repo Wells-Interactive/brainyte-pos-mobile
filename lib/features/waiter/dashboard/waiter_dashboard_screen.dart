@@ -605,7 +605,7 @@ class _WaiterDashboardScreenState extends State<WaiterDashboardScreen> {
           : ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: _tables.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 8),
+              separatorBuilder: (_, _) => const SizedBox(width: 8),
               itemBuilder: (context, index) {
                 final table = _tables[index];
                 return SizedBox(
@@ -627,7 +627,7 @@ class _WaiterDashboardScreenState extends State<WaiterDashboardScreen> {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: _categories.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 6),
+        separatorBuilder: (_, _) => const SizedBox(width: 6),
         itemBuilder: (context, index) {
           final category = _categories[index];
           final isSelected = _selectedCategory == category['key'];

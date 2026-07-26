@@ -40,4 +40,33 @@ class AdminStats {
           .toList(),
     );
   }
+
+  /// Parse v1 reports endpoint response format.
+  ///
+  /// v1 returns { total_revenue, completed_orders, summary_day,
+  ///              tables: [{id, name, status}], ... }
+  factory AdminStats.fromV1Json(Map<String, dynamic> json) {
+    final tables = (json['tables'] as List<dynamic>? ?? const <dynamic>[])
+        .map((entry) => Map<String, dynamic>.from(entry as Map))
+        .toList();
+
+    final occupied = tables.where((table) => (table['status']?.toString() ?? 'available') != 'available').length;
+    final available = tables.length - occupied;
+
+    // v1 reports don't have 'sales' - use top_items as recent instead
+    final topItems = (json['top_items'] as List<dynamic>? ?? const <dynamic>[])
+        .map((entry) => Map<String, dynamic>.from(entry as Map))
+        .toList();
+
+    return AdminStats(
+      ordersToday: (json['completed_orders'] as num?)?.toInt() ?? 0,
+      revenueToday: (json['summary_day'] as num?)?.toDouble() ?? 0,
+      occupiedTables: occupied,
+      availableTables: available,
+      kitchenQueue: (json['total_kitchen_orders'] as num?)?.toInt() ?? 0,
+      barQueue: (json['total_bar_orders'] as num?)?.toInt() ?? 0,
+      activeWaiters: (tables.where((t) => t['status'] == 'occupied').length).clamp(0, 999),
+      recentOrders: topItems,
+    );
+  }
 }

@@ -47,7 +47,7 @@ class RealtimeService {
 
     try {
       await dio.get(
-        '${Endpoints.liveEvents}?role=$role',
+        '${Endpoints.legacyLiveEvents}?role=$role',
         options: Options(
           responseType: ResponseType.stream,
         ),
@@ -69,7 +69,7 @@ class RealtimeService {
       if (_disposed) return;
 
       try {
-        final response = await ApiClient.instance.get(Endpoints.status);
+        final response = await ApiClient.instance.getLegacy(Endpoints.legacyStatus);
         if (response.success && response.data != null) {
           _controller.add(response.data!);
         }

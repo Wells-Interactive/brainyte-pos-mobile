@@ -3,9 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../core/api/api_client.dart';
-import '../../core/api/endpoints.dart';
-import '../../core/constants/colors.dart';
 import '../../core/models/order_item.dart';
+import '../../core/repositories/order_repository.dart';
 import '../../widgets/loading_indicator.dart';
 
 class BarDashboardScreen extends StatefulWidget {
@@ -16,7 +15,7 @@ class BarDashboardScreen extends StatefulWidget {
 }
 
 class _BarDashboardScreenState extends State<BarDashboardScreen> {
-  final _apiClient = ApiClient.instance;
+  final _orderRepository = OrderRepository(ApiClient.instance);
   late final Timer _timer;
   List<OrderItemModel> _items = const [];
   bool _loading = true;
@@ -35,15 +34,14 @@ class _BarDashboardScreenState extends State<BarDashboardScreen> {
   }
 
   Future<void> _loadOrders() async {
-    final result = await _apiClient.get(Endpoints.status);
+    final result = await _orderRepository.fetchOrders();
     if (!mounted) {
       return;
     }
 
     if (result.success && result.data != null) {
-      final rawItems = result.data!['order_items'] as List<dynamic>? ?? const <dynamic>[];
-      final orderItems = rawItems
-          .map((entry) => OrderItemModel.fromJson(Map<String, dynamic>.from(entry as Map)))
+      final orderItems = result.data!
+          .expand((order) => order.items)
           .where((item) => item.routedTo == 'bar')
           .toList();
 
@@ -51,13 +49,15 @@ class _BarDashboardScreenState extends State<BarDashboardScreen> {
         _loading = false;
         _items = orderItems;
       });
+    } else {
+      setState(() => _loading = false);
     }
   }
 
   Future<void> _updateStatus(int itemId, String status) async {
-    final result = await _apiClient.post(
-      Endpoints.status,
-      body: {'item_id': itemId, 'status': status},
+    final result = await _orderRepository.updateOrderStatus(
+      itemId: itemId,
+      status: status,
     );
     if (!mounted) {
       return;
@@ -82,7 +82,7 @@ class _BarDashboardScreenState extends State<BarDashboardScreen> {
   }
 
   Future<void> _logout() async {
-    await _apiClient.clearSession();
+    await ApiClient.instance.clearSession();
     if (!mounted) return;
     Navigator.of(context).pushReplacementNamed('/login');
   }
@@ -205,7 +205,7 @@ class _BarDashboardScreenState extends State<BarDashboardScreen> {
                       ),
                     ),
                     const Spacer(),
-                    Text('Table ${item.orderId}', style: const TextStyle(fontWeight: FontWeight.w700)),
+                    Text('Order #${item.orderId}', style: const TextStyle(fontWeight: FontWeight.w700)),
                   ],
                 ),
                 const SizedBox(height: 10),

@@ -9,7 +9,7 @@ class TableRepository {
   final ApiClient _client;
 
   Future<ApiResponse<List<RestaurantTable>>> fetchTables() async {
-    final result = await _client.get(Endpoints.status);
+    final result = await _client.getLegacy(Endpoints.legacyStatus);
     if (!result.success || result.data == null) {
       return ApiResponse.failure(result.error ?? 'Unable to load tables', statusCode: result.statusCode);
     }
