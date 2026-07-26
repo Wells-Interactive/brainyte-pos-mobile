@@ -144,10 +144,10 @@ class ApiClient {
   /// Check if user is authenticated (has a valid access token).
   bool get isAuthenticated => _accessToken != null && _accessToken!.isNotEmpty;
 
-  /// Parse v1 API response from raw response data.
+/// Parse v1 API response from raw response data.
   ///
-  /// v1 format: { success: bool, data: T?, error: String?, meta: ... }
-  /// Legacy format: { success: true, key: value, ... }
+  /// v1 format: `{ success: bool, data: T?, error: String?, meta: ... }`
+  /// Legacy format: `{ success: true, key: value, ... }`
   ApiResponse<T> _parseResponse<T>(
     dynamic responseData,
     int statusCode, {

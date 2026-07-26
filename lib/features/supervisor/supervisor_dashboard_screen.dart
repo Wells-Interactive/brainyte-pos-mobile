@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../core/api/api_client.dart';
+import '../../core/api/endpoints.dart';
 import '../../core/constants/colors.dart';
 import '../../core/utils/currency.dart';
 import '../../widgets/loading_indicator.dart';
@@ -34,11 +35,29 @@ class _SupervisorDashboardScreenState extends State<SupervisorDashboardScreen> {
   }
 
   Future<void> _loadStats() async {
-    final result = await _apiClient.get('/API/Status/index.php?stats=1');
+    // Try v1 reports endpoint first
+    final result = await _apiClient.get<Map<String, dynamic>>(
+      Endpoints.v1Reports,
+      queryParameters: {'scope': 'day', 'top_items': 5},
+      onData: (data) => data,
+    );
     if (!mounted) return;
     if (result.success && result.data != null) {
       setState(() {
         _stats = result.data;
+        _loading = false;
+      });
+      return;
+    }
+
+    // Fallback to legacy status endpoint
+    final legacyResult = await _apiClient.getLegacy(
+      '${Endpoints.legacyStatus}?stats=1',
+    );
+    if (!mounted) return;
+    if (legacyResult.success && legacyResult.data != null) {
+      setState(() {
+        _stats = legacyResult.data;
         _loading = false;
       });
     } else {
@@ -86,7 +105,6 @@ class _SupervisorDashboardScreenState extends State<SupervisorDashboardScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Today's Summary
           Card(
             color: AppColors.primary,
             child: Padding(
@@ -117,8 +135,6 @@ class _SupervisorDashboardScreenState extends State<SupervisorDashboardScreen> {
             ),
           ),
           const SizedBox(height: 16),
-
-          // Order Status Grid
           GridView.count(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
@@ -154,8 +170,6 @@ class _SupervisorDashboardScreenState extends State<SupervisorDashboardScreen> {
             ],
           ),
           const SizedBox(height: 16),
-
-          // Live Table Status
           const Text(
             'Table Status',
             style: TextStyle(fontWeight: FontWeight.w800, fontSize: 18),
@@ -244,4 +258,3 @@ class _StatusCard extends StatelessWidget {
     );
   }
 }
-
