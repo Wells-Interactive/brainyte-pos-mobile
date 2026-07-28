@@ -5,7 +5,7 @@ class Validators {
     }
     final email = value.trim();
     if (!email.contains('@')) {
-      return 'Enter a valid email';
+      return 'Enter a valid email address';
     }
     return null;
   }
