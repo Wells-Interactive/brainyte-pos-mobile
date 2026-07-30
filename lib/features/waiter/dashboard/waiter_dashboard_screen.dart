@@ -8,6 +8,7 @@ import '../../../core/repositories/menu_repository.dart';
 import '../../../core/repositories/order_repository.dart';
 import '../../../core/repositories/table_repository.dart';
 import '../../../core/utils/currency.dart';
+import '../../../core/utils/error_handler.dart';
 import '../../../widgets/empty_state.dart';
 import '../../../widgets/menu_card.dart';
 import '../../../widgets/order_tile.dart';
@@ -263,9 +264,10 @@ class _WaiterDashboardScreenState extends State<WaiterDashboardScreen> {
       );
       setState(() {});
     } else {
+      final errorMsg = ErrorHandler.getFriendlyError(Exception(result.error ?? 'Unable to submit order'));
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(result.error ?? 'Unable to submit order'),
+          content: Text(errorMsg),
           backgroundColor: Colors.red.shade700,
         ),
       );

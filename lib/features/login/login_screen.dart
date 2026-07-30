@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/api/api_client.dart';
 import '../../core/constants/colors.dart';
 import '../../core/repositories/auth_repository.dart';
+import '../../core/utils/error_handler.dart';
 import '../../routing/app_router.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -46,9 +47,10 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _isSubmitting = false);
 
     if (!result.success || result.data == null) {
+      final errorMessage = result.error ?? ErrorHandler.signInFailed;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(result.error ?? 'Login failed'),
+          content: Text(ErrorHandler.getFriendlyError(Exception(errorMessage))),
           backgroundColor: Colors.red.shade700,
         ),
       );

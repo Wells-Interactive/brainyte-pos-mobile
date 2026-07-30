@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../core/api/api_client.dart';
 import '../../core/models/order_item.dart';
 import '../../core/repositories/order_repository.dart';
+import '../../core/utils/error_handler.dart';
 import '../../widgets/loading_indicator.dart';
 
 class KitchenDashboardScreen extends StatefulWidget {
@@ -73,7 +74,7 @@ class _KitchenDashboardScreenState extends State<KitchenDashboardScreen> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(result.error ?? 'Unable to update'),
+          content: Text(ErrorHandler.getFriendlyError(Exception(result.error ?? 'Unable to update'))),
           backgroundColor: Colors.red.shade700,
         ),
       );

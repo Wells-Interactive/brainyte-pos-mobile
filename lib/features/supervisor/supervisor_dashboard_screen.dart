@@ -6,6 +6,7 @@ import '../../core/api/api_client.dart';
 import '../../core/api/endpoints.dart';
 import '../../core/constants/colors.dart';
 import '../../core/utils/currency.dart';
+import '../../core/utils/error_handler.dart';
 import '../../widgets/loading_indicator.dart';
 
 class SupervisorDashboardScreen extends StatefulWidget {

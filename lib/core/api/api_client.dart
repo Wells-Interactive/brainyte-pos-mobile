@@ -5,6 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants/app_constants.dart';
+import '../utils/error_handler.dart';
 import 'api_response.dart';
 import 'endpoints.dart';
 
@@ -180,26 +181,38 @@ class ApiClient {
   }
 
   /// Extract error message from DioException.
+  /// Uses [ErrorHandler.getFriendlyError] for user-friendly messages,
+  /// but also tries to extract server-side error details when available.
   String _extractMessage(DioException error) {
+    // First try to get server-provided error message
     final data = error.response?.data;
+    String? serverMessage;
+
     if (data is Map) {
       // v1 format: { error: "message" }
-      final v1Error = data['error']?.toString();
-      if (v1Error != null && v1Error.isNotEmpty) return v1Error;
+      serverMessage = data['error']?.toString();
       // Legacy format
-      return data['message']?.toString() ?? 'Request failed';
-    }
-    if (data is String) {
+      if (serverMessage == null || serverMessage.isEmpty) {
+        serverMessage = data['message']?.toString();
+      }
+    } else if (data is String) {
       try {
         final decoded = jsonDecode(data);
         if (decoded is Map) {
-          return decoded['error']?.toString() ?? decoded['message']?.toString() ?? data;
+          serverMessage = decoded['error']?.toString() ?? decoded['message']?.toString();
         }
       } catch (_) {
-        return data;
+        serverMessage = data;
       }
     }
-    return error.message ?? 'Request failed';
+
+    // If we have a server message, return it
+    if (serverMessage != null && serverMessage.isNotEmpty) {
+      return serverMessage;
+    }
+
+    // Fall back to friendly error messages for technical errors
+    return ErrorHandler.getFriendlyError(error);
   }
 
   // ============================================================
@@ -209,7 +222,7 @@ class ApiClient {
   /// Send a POST request and parse v1 response.
   ///
   /// [onData] converts the response data map to the desired type.
-  /// If [onData] is null, returns the raw Map<String, dynamic>.
+  /// If [onData] is null, returns the raw Map &lt;String, dynamic&gt;.
   Future<ApiResponse<T>> post<T>(
     String path, {
     Map<String, dynamic>? body,
