@@ -120,6 +120,31 @@ All Rights Reserved.
 
 <p align="center">
 
+## 📱 Download Brainyte POS
+
+Get the latest Android version of Brainyte POS.
+
+<p align="center">
+  <a href="https://github.com/Wells-Interactive/brainyte-pos-mobile/releases/latest">
+    <img src="https://img.shields.io/badge/⬇%20DOWNLOAD%20APK-Android-brightgreen?style=for-the-badge&logo=android" alt="Download Brainyte POS APK">
+  </a>
+</p>
+
+> **Android:** Download the latest APK from the GitHub Releases page and install it on your device.
+
+### Installation
+
+1. Click **Download APK** above.
+2. Download the latest `.apk` file.
+3. Open the downloaded APK on your Android device.
+4. If Android displays **“For your security, your phone currently isn’t allowed to install unknown apps from this source”**, tap **Settings**.
+5. Enable **Allow from this source** for the browser or file manager you used to open the APK.
+6. Go back and tap **Install**.
+7. Once installation is complete, launch **Brainyte POS**.
+
+> ⚠️ **Security Note:** After installing Brainyte POS, you can disable **Allow from this source** again in your Android settings. Only install APK files downloaded from the official Wells Interactive GitHub repository.
+
+
 ### 🍽️ Brainyte POS Mobile App
 
 **Built with ❤️ using Flutter, Riverpod & PHP Backend**
