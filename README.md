@@ -120,7 +120,7 @@ All Rights Reserved.
 
 <p align="center">
 
-## 📱 Download Brainyte POS
+## 📱 Download Brainyte POS Mobile
 
 Get the latest Android version of Brainyte POS Mobile.
 
