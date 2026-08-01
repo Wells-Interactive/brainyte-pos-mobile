@@ -122,7 +122,7 @@ All Rights Reserved.
 
 ## 📱 Download Brainyte POS
 
-Get the latest Android version of Brainyte POS.
+Get the latest Android version of Brainyte POS Mobile.
 
 <p align="center">
   <a href="https://github.com/Wells-Interactive/brainyte-pos-mobile/releases/latest">
