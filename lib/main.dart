@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/api/api_client.dart';
 import 'core/providers/auth_provider.dart';
 import 'routing/app_router.dart';
+import 'features/login/login_screen.dart';
 import 'theme/app_theme.dart';
 
 Future<void> main() async {
@@ -27,10 +28,11 @@ class BrainytePosApp extends ConsumerWidget {
     });
 
     return MaterialApp(
-      title: 'Brainyte Restaurant POS',
+      title: 'Brainyte_Pos',
       theme: AppTheme.light,
-      initialRoute: AppRouter.login,
+      home: const LoginScreen(),
       onGenerateRoute: AppRouter.onGenerateRoute,
+      onUnknownRoute: AppRouter.onUnknownRoute,
     );
   }
 }

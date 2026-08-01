@@ -21,53 +21,38 @@ class AppRouter {
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case '/':
       case login:
         return MaterialPageRoute<void>(
-          settings: settings,
+          settings: const RouteSettings(name: login),
           builder: (_) => const LoginScreen(),
         );
       case waiter:
-        return MaterialPageRoute<void>(
-          settings: settings,
-          builder: (_) => const WaiterDashboardScreen(),
-        );
+        return MaterialPageRoute<void>(settings: settings, builder: (_) => const WaiterDashboardScreen());
       case kitchen:
-        return MaterialPageRoute<void>(
-          settings: settings,
-          builder: (_) => const KitchenDashboardScreen(),
-        );
+        return MaterialPageRoute<void>(settings: settings, builder: (_) => const KitchenDashboardScreen());
       case bar:
-        return MaterialPageRoute<void>(
-          settings: settings,
-          builder: (_) => const BarDashboardScreen(),
-        );
+        return MaterialPageRoute<void>(settings: settings, builder: (_) => const BarDashboardScreen());
       case admin:
-        return MaterialPageRoute<void>(
-          settings: settings,
-          builder: (_) => const AdminDashboardScreen(),
-        );
+        return MaterialPageRoute<void>(settings: settings, builder: (_) => const AdminDashboardScreen());
       case manager:
-        return MaterialPageRoute<void>(
-          settings: settings,
-          builder: (_) => const ManagerDashboardScreen(),
-        );
+        return MaterialPageRoute<void>(settings: settings, builder: (_) => const ManagerDashboardScreen());
       case supervisor:
-        return MaterialPageRoute<void>(
-          settings: settings,
-          builder: (_) => const SupervisorDashboardScreen(),
-        );
+        return MaterialPageRoute<void>(settings: settings, builder: (_) => const SupervisorDashboardScreen());
       case owner:
-        return MaterialPageRoute<void>(
-          settings: settings,
-          builder: (_) => const OwnerDashboardScreen(),
-        );
+        return MaterialPageRoute<void>(settings: settings, builder: (_) => const OwnerDashboardScreen());
       default:
         return MaterialPageRoute<void>(
-          settings: settings,
-          builder: (_) => Scaffold(
-            body: Center(child: Text('Route not found: ${settings.name}')),
-          ),
+          settings: const RouteSettings(name: login),
+          builder: (_) => const LoginScreen(),
         );
     }
+  }
+
+  static Route<dynamic> onUnknownRoute(RouteSettings settings) {
+    return MaterialPageRoute<void>(
+      settings: const RouteSettings(name: login),
+      builder: (_) => const LoginScreen(),
+    );
   }
 }
