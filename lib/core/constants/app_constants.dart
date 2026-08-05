@@ -1,5 +1,5 @@
 class AppConstants {
-  static const String appName = '6th June;
+  static const String appName = '6th June';
   static const String baseUrl = String.fromEnvironment(
     'API_BASE_URL',
     defaultValue: 'https://6june.nwekeuko.com',
