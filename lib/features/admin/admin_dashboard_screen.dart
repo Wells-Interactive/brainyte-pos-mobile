@@ -57,8 +57,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
+    return ConfirmExitScope(
+      child: Scaffold(
+        appBar: AppBar(
         title: const Text('Admin Monitoring'),
         actions: [
           IconButton(

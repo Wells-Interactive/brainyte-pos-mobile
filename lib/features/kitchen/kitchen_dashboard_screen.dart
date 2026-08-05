@@ -6,6 +6,7 @@ import '../../core/api/api_client.dart';
 import '../../core/models/order_item.dart';
 import '../../core/repositories/order_repository.dart';
 import '../../core/utils/error_handler.dart';
+import '../../widgets/confirm_exit_scope.dart';
 import '../../widgets/loading_indicator.dart';
 
 class KitchenDashboardScreen extends StatefulWidget {
@@ -106,8 +107,9 @@ class _KitchenDashboardScreenState extends State<KitchenDashboardScreen> {
     final ready = _items.where((i) => i.status == 'ready').toList();
     final served = _items.where((i) => i.status == 'served').toList();
 
-    return Scaffold(
-      appBar: AppBar(
+    return ConfirmExitScope(
+      child: Scaffold(
+        appBar: AppBar(
         title: const Text('Kitchen Queue'),
         actions: [
           Padding(

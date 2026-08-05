@@ -5,6 +5,7 @@ import '../../core/constants/colors.dart';
 import '../../core/repositories/auth_repository.dart';
 import '../../core/utils/error_handler.dart';
 import '../../routing/app_router.dart';
+import '../../widgets/confirm_exit_scope.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -77,14 +78,15 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF1A1A2E),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 440),
-            child: Form(
+    return ConfirmExitScope(
+      child: Scaffold(
+        backgroundColor: const Color(0xFF1A1A2E),
+        body: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 440),
+              child: Form(
               key: _formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,

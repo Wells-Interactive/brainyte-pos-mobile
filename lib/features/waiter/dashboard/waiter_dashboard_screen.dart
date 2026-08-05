@@ -279,8 +279,9 @@ class _WaiterDashboardScreenState extends State<WaiterDashboardScreen> {
     final isWide = MediaQuery.of(context).size.width > 980;
     final theme = Theme.of(context);
 
-    return Scaffold(
-      appBar: AppBar(
+    return ConfirmExitScope(
+      child: Scaffold(
+        appBar: AppBar(
         title: const Text('Waiter POS'),
         actions: [
           if (_cartItemsCount > 0)

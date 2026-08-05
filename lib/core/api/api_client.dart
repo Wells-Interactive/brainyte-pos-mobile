@@ -338,9 +338,9 @@ class ApiClient {
     await prefs.remove(AppConstants.roleKey);
     await prefs.remove(AppConstants.authTokenKey);
     await prefs.remove(AppConstants.refreshTokenKey);
-    await prefs.remove('user_id');
-    await prefs.remove('user_name');
-    await prefs.remove('user_email');
+    await prefs.remove(AppConstants.userIdKey);
+    await prefs.remove(AppConstants.userNameKey);
+    await prefs.remove(AppConstants.userEmailKey);
   }
 
   /// Store auth data after successful login.
@@ -350,11 +350,19 @@ class ApiClient {
     required String role,
     String userId = '',
     String userName = '',
+    String userEmail = '',
   }) async {
     await _storeTokens(accessToken, refreshToken);
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(AppConstants.roleKey, role);
-    if (userId.isNotEmpty) await prefs.setString('user_id', userId);
-    if (userName.isNotEmpty) await prefs.setString('user_name', userName);
+    if (userId.isNotEmpty) {
+      await prefs.setString(AppConstants.userIdKey, userId);
+    }
+    if (userName.isNotEmpty) {
+      await prefs.setString(AppConstants.userNameKey, userName);
+    }
+    if (userEmail.isNotEmpty) {
+      await prefs.setString(AppConstants.userEmailKey, userEmail);
+    }
   }
 }

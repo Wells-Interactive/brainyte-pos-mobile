@@ -50,6 +50,13 @@ class AuthRepository {
     final accessToken = result.data!['access_token']?.toString() ?? '';
     final refreshToken = result.data!['refresh_token']?.toString() ?? '';
 
+    if (accessToken.isEmpty || refreshToken.isEmpty) {
+      return ApiResponse.failure(
+        'Missing authentication tokens from server',
+        statusCode: result.statusCode,
+      );
+    }
+
     await _client.storeAuthData(
       accessToken: accessToken,
       refreshToken: refreshToken,
@@ -65,12 +72,13 @@ class AuthRepository {
   }
 
   Future<void> logout() async {
-    // Try to revoke token before clearing
-    if (_client.accessToken != null && _client.accessToken!.isNotEmpty) {
+    // Try to revoke refresh token before clearing
+    final refreshToken = _client.refreshToken;
+    if (refreshToken != null && refreshToken.isNotEmpty) {
       try {
         await _client.post<Map<String, dynamic>>(
           Endpoints.v1RevokeToken,
-          body: {'token': _client.accessToken},
+          body: {'refresh_token': refreshToken},
         );
       } catch (_) {}
     }
@@ -84,7 +92,17 @@ class AuthRepository {
 
   Future<String?> getStoredUserName() async {
     final prefs = await _getPrefs();
-    return prefs.getString('user_name');
+    return prefs.getString(AppConstants.userNameKey);
+  }
+
+  Future<String?> getStoredUserEmail() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(AppConstants.userEmailKey);
+  }
+
+  Future<String?> getStoredUserId() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(AppConstants.userIdKey);
   }
 
   Future<SharedPreferences> _getPrefs() => SharedPreferences.getInstance();

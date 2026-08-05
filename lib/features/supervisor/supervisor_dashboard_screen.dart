@@ -7,6 +7,7 @@ import '../../core/api/endpoints.dart';
 import '../../core/constants/colors.dart';
 import '../../core/utils/currency.dart';
 import '../../core/utils/error_handler.dart';
+import '../../widgets/confirm_exit_scope.dart';
 import '../../widgets/loading_indicator.dart';
 
 class SupervisorDashboardScreen extends StatefulWidget {
@@ -74,8 +75,9 @@ class _SupervisorDashboardScreenState extends State<SupervisorDashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
+    return ConfirmExitScope(
+      child: Scaffold(
+        appBar: AppBar(
         title: const Text('Supervisor Dashboard'),
         actions: [
           IconButton(

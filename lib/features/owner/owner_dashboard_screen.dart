@@ -8,6 +8,7 @@ import '../../core/repositories/admin_repository.dart';
 import '../../core/models/admin_stats.dart';
 import '../../core/utils/currency.dart';
 import '../../core/utils/error_handler.dart';
+import '../../widgets/confirm_exit_scope.dart';
 import '../../widgets/loading_indicator.dart';
 
 class OwnerDashboardScreen extends StatefulWidget {
@@ -57,8 +58,9 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
+    return ConfirmExitScope(
+      child: Scaffold(
+        appBar: AppBar(
         title: const Text('Owner Dashboard'),
         actions: [
           IconButton(
