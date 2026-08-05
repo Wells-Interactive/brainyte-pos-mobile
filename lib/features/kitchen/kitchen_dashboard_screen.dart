@@ -163,7 +163,8 @@ class _KitchenDashboardScreenState extends State<KitchenDashboardScreen> {
                       ),
                     ],
                   ),
-                ),
+),
+      ),
     );
   }
 

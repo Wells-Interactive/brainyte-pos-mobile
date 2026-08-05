@@ -92,6 +92,7 @@ class _SupervisorDashboardScreenState extends State<SupervisorDashboardScreen> {
           : _stats == null
               ? const Center(child: Text('Unable to load data'))
               : _buildContent(),
+      ),
     );
   }
 

@@ -163,7 +163,8 @@ class _BarDashboardScreenState extends State<BarDashboardScreen> {
                       ),
                     ],
                   ),
-                ),
+),
+      ),
     );
   }
 

@@ -81,6 +81,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
           : _stats == null
               ? const Center(child: Text('Unable to load analytics'))
               : _buildContent(),
+      ),
     );
   }
 

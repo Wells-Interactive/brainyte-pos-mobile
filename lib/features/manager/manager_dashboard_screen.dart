@@ -89,6 +89,7 @@ class _ManagerDashboardScreenState extends State<ManagerDashboardScreen> {
           : _stats == null
               ? const Center(child: Text('Unable to load data'))
               : _buildContent(),
+      ),
     );
   }
 

@@ -9,6 +9,7 @@ import '../../../core/repositories/order_repository.dart';
 import '../../../core/repositories/table_repository.dart';
 import '../../../core/utils/currency.dart';
 import '../../../core/utils/error_handler.dart';
+import '../../../widgets/confirm_exit_scope.dart';
 import '../../../widgets/empty_state.dart';
 import '../../../widgets/menu_card.dart';
 import '../../../widgets/order_tile.dart';
@@ -314,6 +315,7 @@ class _WaiterDashboardScreenState extends State<WaiterDashboardScreen> {
                 );
               },
             ),
+      ),
     );
   }
 
