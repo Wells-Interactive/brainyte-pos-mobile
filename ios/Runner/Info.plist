@@ -28,6 +28,8 @@
 	<true/>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Brainyte uses your location to help customers track active deliveries.</string>
 		<key>UIApplicationSupportsMultipleScenes</key>
 		<false/>
 		<key>UISceneConfigurations</key>

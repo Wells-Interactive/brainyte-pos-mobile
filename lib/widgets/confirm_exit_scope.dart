@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 /// Wraps a [child] so that the Android system back button shows a
 /// confirmation dialog before exiting the app instead of popping to an
@@ -46,12 +47,7 @@ class ConfirmExitScope extends StatelessWidget {
         }
         final shouldExit = await _confirmExit(context);
         if (shouldExit && context.mounted) {
-          // Exit the app by popping the root frame route.
-          final navigator = Navigator.of(context);
-          navigator.popUntil((route) => route.isFirst);
-          if (navigator.canPop()) {
-            navigator.pop();
-          }
+          await SystemNavigator.pop();
         }
       },
       child: child,

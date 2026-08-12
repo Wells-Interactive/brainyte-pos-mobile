@@ -37,4 +37,6 @@ class Endpoints {
 
   // Reports & Stats
   static const String v1Reports = '/API/v1/reports/index.php';
+  static const String v1Delivery = '/API/v1/delivery/index.php';
+  static const String v1CustomerRegistration = '/API/v1/auth/customer.php';
 }
