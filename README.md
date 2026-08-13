@@ -431,8 +431,7 @@ Future enhancements can include:
 
 * 🖨️ Expanded thermal printer support
 * 🧾 Advanced receipt templates
-* 💳 Payment integration
-* 📦 Inventory management
+* 💳 Paystack & Paypal Payment integration
 * 📊 Advanced analytics
 * 📈 Business reports
 * 👥 Staff management
