@@ -58,7 +58,7 @@ final cartGrandTotalProvider = Provider<double>((ref) {
   final menu = menuAsync.when(
     data: (items) => items,
     loading: () => const [],
-    error: (_, __) => const [],
+    error: (_, _) => const [],
   );
 
   return cart.entries.fold<double>(0, (sum, entry) {

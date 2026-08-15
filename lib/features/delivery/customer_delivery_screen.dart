@@ -29,12 +29,13 @@ class _CustomerDeliveryScreenState extends State<CustomerDeliveryScreen> {
     final orders = await ApiClient.instance.get<Map<String, dynamic>>(
       Endpoints.v1Delivery,
     );
-    if (mounted)
+    if (mounted) {
       setState(() {
         _menu = menu.data?['items'] ?? [];
         _orders = orders.data?['orders'] ?? [];
         _loading = false;
       });
+    }
   }
 
   Future<void> _request() async {
@@ -42,8 +43,9 @@ class _CustomerDeliveryScreenState extends State<CustomerDeliveryScreen> {
     if (item == null ||
         qty == null ||
         _address.text.trim().isEmpty ||
-        _phone.text.trim().isEmpty)
+        _phone.text.trim().isEmpty) {
       return _notice('Complete all delivery details.');
+    }
     final r = await ApiClient.instance.post<Map<String, dynamic>>(
       Endpoints.v1Delivery,
       body: {
@@ -65,8 +67,9 @@ class _CustomerDeliveryScreenState extends State<CustomerDeliveryScreen> {
   }
 
   void _notice(String t) {
-    if (mounted)
+    if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(t)));
+    }
   }
 
   @override
@@ -93,7 +96,7 @@ class _CustomerDeliveryScreenState extends State<CustomerDeliveryScreen> {
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   DropdownButtonFormField<String>(
-                    value: _itemId.isEmpty ? null : _itemId,
+                    initialValue: _itemId.isEmpty ? null : _itemId,
                     decoration: const InputDecoration(labelText: 'Menu item'),
                     items: _menu
                         .map(

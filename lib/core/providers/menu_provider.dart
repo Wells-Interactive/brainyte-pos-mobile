@@ -42,6 +42,6 @@ final filteredMenuProvider = Provider<List<MenuItem>>((ref) {
       return items.where((item) => item.category == category).toList();
     },
     loading: () => const [],
-    error: (_, __) => const [],
+    error: (_, _) => const [],
   );
 });

@@ -26,11 +26,12 @@ class _RiderDeliveryScreenState extends State<RiderDeliveryScreen> {
     final result = await ApiClient.instance.get<Map<String, dynamic>>(
       Endpoints.v1Delivery,
     );
-    if (mounted)
+    if (mounted) {
       setState(() {
         _orders = result.data?['orders'] ?? [];
         _loading = false;
       });
+    }
   }
 
   Future<void> _post(dynamic order, String action, [String? status]) async {
@@ -45,11 +46,13 @@ class _RiderDeliveryScreenState extends State<RiderDeliveryScreen> {
 
   Future<void> _shareLocation(dynamic order) async {
     var permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied)
+    if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
+    }
     if (permission == LocationPermission.denied ||
-        permission == LocationPermission.deniedForever)
+        permission == LocationPermission.deniedForever) {
       return;
+    }
     final position = await Geolocator.getCurrentPosition();
     await ApiClient.instance.post<Map<String, dynamic>>(
       Endpoints.v1Delivery,
