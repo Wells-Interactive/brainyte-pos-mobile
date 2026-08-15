@@ -9,16 +9,16 @@ class TableRepository {
   final ApiClient _client;
 
   Future<ApiResponse<List<RestaurantTable>>> fetchTables() async {
-    final result = await _client.getLegacy(Endpoints.legacyStatus);
-    if (!result.success || result.data == null) {
-      return ApiResponse.failure(result.error ?? 'Unable to load tables', statusCode: result.statusCode);
-    }
-
-    final rawTables = result.data!['tables'] as List<dynamic>? ?? const <dynamic>[];
-    final tables = rawTables
-        .map((table) => RestaurantTable.fromJson(Map<String, dynamic>.from(table as Map)))
-        .toList();
-
-    return ApiResponse.success(tables, statusCode: result.statusCode);
+    // Use v1 endpoint with Bearer token authentication
+    final result = await _client.get(
+      Endpoints.v1Status,
+      onData: (data) {
+        final rawTables = data['tables'] as List<dynamic>? ?? const <dynamic>[];
+        return rawTables
+            .map((table) => RestaurantTable.fromJson(Map<String, dynamic>.from(table as Map)))
+            .toList();
+      },
+    );
+    return result;
   }
 }

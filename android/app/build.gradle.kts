@@ -1,5 +1,7 @@
 plugins {
     id("com.android.application")
+    id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
@@ -8,7 +10,7 @@ import java.util.Properties
 import java.io.FileInputStream
 
 android {
-    namespace = "com.example.brainyte_restaurant_pos"
+    namespace = "com.wellsinteractive.brainyte_pos"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -18,7 +20,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.brainyte_restaurant_pos"
+        applicationId = "com.wellsinteractive.brainyte_pos"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
@@ -56,4 +58,16 @@ kotlin {
 
 flutter {
     source = "../.."
+dependencies {
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+    implementation("com.google.firebase:firebase-core")
+    implementation("com.google.firebase:firebase-messaging")
+    implementation("com.google.firebase:firebase-crashlytics")
+    implementation("com.google.firebase:firebase-performance")
+    implementation("com.google.firebase:firebase-appdistribution-gradle")
+}
+
+flutter {
+    source = "../.."
+}
 }

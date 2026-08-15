@@ -35,6 +35,9 @@ class Endpoints {
   static const String v1OrderStatus = '/API/v1/orders/status.php';
   static const String v1OrderHistory = '/API/v1/orders/history.php';
 
+  // Status (tables and order items)
+  static const String v1Status = '/API/v1/status/index.php';
+
   // Reports & Stats
   static const String v1Reports = '/API/v1/reports/index.php';
   static const String v1Delivery = '/API/v1/delivery/index.php';
