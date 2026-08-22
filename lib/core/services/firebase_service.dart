@@ -37,12 +37,20 @@ class FirebaseService {
       }
 
       // Initialize Performance Monitoring
-      FirebasePerformance.instance.setPerformanceCollectionEnabled(!kDebugMode);
-      debugPrint('Performance Monitoring initialized');
+      try {
+        FirebasePerformance.instance.setPerformanceCollectionEnabled(!kDebugMode);
+        debugPrint('Performance Monitoring initialized');
+      } catch (e) {
+        debugPrint('Performance Monitoring initialization failed: $e');
+      }
 
       // Initialize Firebase Messaging
-      await _messagingService.initialize();
-      debugPrint('Firebase Messaging initialized');
+      try {
+        await _messagingService.initialize();
+        debugPrint('Firebase Messaging initialized');
+      } catch (e) {
+        debugPrint('Firebase Messaging initialization failed: $e');
+      }
 
       _isInitialized = true;
     } catch (e) {

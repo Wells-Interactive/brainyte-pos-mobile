@@ -62,14 +62,21 @@ class ApiClient {
       },
       onError: (error, handler) async {
         // Auto-refresh on 401 Unauthorized
-        if (error.response?.statusCode == 401 && _refreshToken != null && !_isRefreshing) {
+        if (error.response?.statusCode == 401 &&
+            _refreshToken != null &&
+            _refreshToken!.isNotEmpty &&
+            !_isRefreshing) {
           final refreshed = await _attemptTokenRefresh();
           if (refreshed) {
             // Retry the original request with new token
-            final retryOptions = error.requestOptions;
-            retryOptions.headers['Authorization'] = 'Bearer $_accessToken';
             try {
-              final retryResponse = await _dio.fetch(retryOptions);
+              final retryResponse = await _dio.fetch(
+                error.requestOptions.copyWith(
+                  headers: Map<String, dynamic>.from(
+                    error.requestOptions.headers,
+                  )..['Authorization'] = 'Bearer $_accessToken',
+                ),
+              );
               handler.resolve(retryResponse);
               return;
             } catch (_) {}
@@ -116,7 +123,7 @@ class ApiClient {
       // Refresh failed, clear auth
       await clearSession();
       return false;
-    } catch (_) {
+    } catch (e) {
       await clearSession();
       return false;
     } finally {
@@ -222,7 +229,7 @@ class ApiClient {
   /// Send a POST request and parse v1 response.
   ///
   /// [onData] converts the response data map to the desired type.
-  /// If [onData] is null, returns the raw Map &lt;String, dynamic&gt;.
+  /// If [onData] is null, returns the raw `Map<String, dynamic>`.
   Future<ApiResponse<T>> post<T>(
     String path, {
     Map<String, dynamic>? body,
@@ -237,6 +244,8 @@ class ApiClient {
       );
     } on DioException catch (error) {
       return ApiResponse.failure(_extractMessage(error), statusCode: error.response?.statusCode);
+    } catch (error) {
+      return ApiResponse.failure('Unexpected error: $error');
     }
   }
 
@@ -255,6 +264,8 @@ class ApiClient {
       );
     } on DioException catch (error) {
       return ApiResponse.failure(_extractMessage(error), statusCode: error.response?.statusCode);
+    } catch (error) {
+      return ApiResponse.failure('Unexpected error: $error');
     }
   }
 
@@ -273,6 +284,8 @@ class ApiClient {
       );
     } on DioException catch (error) {
       return ApiResponse.failure(_extractMessage(error), statusCode: error.response?.statusCode);
+    } catch (error) {
+      return ApiResponse.failure('Unexpected error: $error');
     }
   }
 
@@ -290,6 +303,8 @@ class ApiClient {
       );
     } on DioException catch (error) {
       return ApiResponse.failure(_extractMessage(error), statusCode: error.response?.statusCode);
+    } catch (error) {
+      return ApiResponse.failure('Unexpected error: $error');
     }
   }
 
@@ -306,6 +321,8 @@ class ApiClient {
       return ApiResponse.success(data, statusCode: response.statusCode);
     } on DioException catch (error) {
       return ApiResponse.failure(_extractMessage(error), statusCode: error.response?.statusCode);
+    } catch (error) {
+      return ApiResponse.failure('Unexpected error: $error');
     }
   }
 
@@ -322,6 +339,8 @@ class ApiClient {
       return ApiResponse.success(data, statusCode: response.statusCode);
     } on DioException catch (error) {
       return ApiResponse.failure(_extractMessage(error), statusCode: error.response?.statusCode);
+    } catch (error) {
+      return ApiResponse.failure('Unexpected error: $error');
     }
   }
 

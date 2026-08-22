@@ -16,47 +16,56 @@ class FirebaseMessagingService {
 
   /// Initialize Firebase messaging and set up handlers.
   Future<void> initialize() async {
-    // Request permission (iOS/macOS)
-    NotificationSettings settings = await _messaging.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-      sound: true,
-    );
+    try {
+      // Request permission (iOS/macOS)
+      NotificationSettings settings = await _messaging.requestPermission(
+        alert: true,
+        announcement: false,
+        badge: true,
+        carPlay: false,
+        criticalAlert: false,
+        provisional: false,
+        sound: true,
+      );
 
-    if (settings.authorizationStatus == AuthorizationStatus.authorized ||
-        settings.authorizationStatus == AuthorizationStatus.provisional) {
-      debugPrint('User granted notification permission');
-    } else {
-      debugPrint('User declined or has not granted notification permission');
-    }
+      if (settings.authorizationStatus == AuthorizationStatus.authorized ||
+          settings.authorizationStatus == AuthorizationStatus.provisional) {
+        debugPrint('User granted notification permission');
+      } else {
+        debugPrint('User declined or has not granted notification permission');
+      }
 
-    // Get FCM token and send to backend
-    final token = await _messaging.getToken();
-    if (token != null) {
-      debugPrint('FCM Token: $token');
-      _sendTokenToBackend(token);
-    }
+      // Get FCM token and send to backend
+      final token = await _messaging.getToken();
+      if (token != null) {
+        debugPrint('FCM Token: $token');
+        _sendTokenToBackend(token);
+      }
 
-    // Handle token refresh
-    _messaging.onTokenRefresh.listen((newToken) {
-      debugPrint('FCM Token refreshed: $newToken');
-      _sendTokenToBackend(newToken);
-    });
+      // Handle token refresh
+      _messaging.onTokenRefresh.listen(
+        (newToken) {
+          debugPrint('FCM Token refreshed: $newToken');
+          _sendTokenToBackend(newToken);
+        },
+        onError: (error) {
+          debugPrint('FCM token refresh error: $error');
+        },
+      );
 
-    // Handle foreground messages
-    FirebaseMessaging.onMessage.listen(_handleForegroundMessage);
+      // Handle foreground messages
+      FirebaseMessaging.onMessage.listen(_handleForegroundMessage);
 
-    // Handle background message tap
-    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessageOpenedApp);
+      // Handle background message tap
+      FirebaseMessaging.onMessageOpenedApp.listen(_handleMessageOpenedApp);
 
-    // Check for initial message (cold start from notification)
-    final initialMessage = await _messaging.getInitialMessage();
-    if (initialMessage != null) {
-      debugPrint('App opened from notification: ${initialMessage.notification?.title}');
+      // Check for initial message (cold start from notification)
+      final initialMessage = await _messaging.getInitialMessage();
+      if (initialMessage != null) {
+        debugPrint('App opened from notification: ${initialMessage.notification?.title}');
+      }
+    } catch (e) {
+      debugPrint('Failed to initialize Firebase Messaging: $e');
     }
   }
 

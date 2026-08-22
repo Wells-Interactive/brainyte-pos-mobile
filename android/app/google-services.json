@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "FIREBASE_PROJECT_NUMBER",
-    "project_id": "Firebase-project-id",
-    "storage_bucket": "FIREBASE-project-id.appspot.com"
+    "project_number": "290847724089",
+    "project_id": "brainyte-pos",
+    "storage_bucket": "brainyte-pos.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "Fiebase_Android_APP_ID",
+        "mobilesdk_app_id": "1:290847724089:android:699b8b8863ab31f52473e8",
         "android_client_info": {
           "package_name": "com.wellsinteractive.brainyte_pos"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "FIREBASE_API_KEY"
+          "current_key": "AIzaSyBajpu8msT3AubhBU8HirWzCMr9l-V-rSQ"
         }
       ],
       "services": {
