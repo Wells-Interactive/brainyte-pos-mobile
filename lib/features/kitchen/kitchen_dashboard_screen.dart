@@ -8,6 +8,7 @@ import '../../core/repositories/order_repository.dart';
 import '../../core/utils/error_handler.dart';
 import '../../widgets/confirm_exit_scope.dart';
 import '../../widgets/loading_indicator.dart';
+import '../../widgets/role_based_drawer.dart';
 
 class KitchenDashboardScreen extends StatefulWidget {
   const KitchenDashboardScreen({super.key});
@@ -123,6 +124,7 @@ class _KitchenDashboardScreenState extends State<KitchenDashboardScreen> {
           ),
         ],
       ),
+      drawer: const RoleBasedDrawer(role: 'kitchen', currentRoute: '/kitchen'),
       body: _loading
           ? const LoadingIndicator()
           : _items.isEmpty

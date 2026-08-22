@@ -9,6 +9,7 @@ import '../../core/models/admin_stats.dart';
 import '../../core/utils/currency.dart';
 import '../../widgets/confirm_exit_scope.dart';
 import '../../widgets/loading_indicator.dart';
+import '../../widgets/role_based_drawer.dart';
 
 class OwnerDashboardScreen extends StatefulWidget {
   const OwnerDashboardScreen({super.key});
@@ -74,50 +75,12 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
           ),
         ],
       ),
-      drawer: _buildDrawer(),
+      drawer: const RoleBasedDrawer(role: 'owner', currentRoute: '/owner'),
       body: _loading
           ? const LoadingIndicator()
           : _stats == null
               ? const Center(child: Text('Unable to load analytics'))
               : _buildContent(),
-      ),
-    );
-  }
-
-  Widget _buildDrawer() {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(color: AppColors.primary),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Icon(Icons.star, size: 40, color: Colors.white),
-                SizedBox(height: 8),
-                Text('Owner Panel', style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w800)),
-                Text('Full Business Overview', style: TextStyle(color: Colors.white70)),
-              ],
-            ),
-          ),
-          ListTile(
-            leading: const Icon(Icons.dashboard),
-            title: const Text('Dashboard'),
-            selected: true,
-            onTap: () => Navigator.pop(context),
-          ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.logout),
-            title: const Text('Logout'),
-            onTap: () {
-              Navigator.pop(context);
-              _logout();
-            },
-          ),
-        ],
       ),
     );
   }

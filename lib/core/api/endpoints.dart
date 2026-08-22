@@ -15,6 +15,7 @@ class Endpoints {
   static const String legacyOrdersHistory = '/API/Orders/history.php';
   static const String legacyOrdersStatus = '/API/Orders/status.php';
   static const String legacyStatus = '/API/Status/index.php';
+  static const String legacySettings = '/API/Settings/index.php';
   static const String legacyLiveEvents = '/API/Live Events/index.php';
 
   // ============================================================
@@ -42,4 +43,8 @@ class Endpoints {
   static const String v1Reports = '/API/v1/reports/index.php';
   static const String v1Delivery = '/API/v1/delivery/index.php';
   static const String v1CustomerRegistration = '/API/v1/auth/customer.php';
+  static const String v1CustomerPasswordReset = '/API/v1/auth/customer_password_reset.php';
+  static const String v1CustomerBilling = '/API/v1/customer/billing.php';
+  static const String v1Payments = '/API/v1/payments/index.php';
+  static const String v1Operations = '/API/v1/operations/index.php';
 }

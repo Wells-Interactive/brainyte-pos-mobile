@@ -1,6 +1,9 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 
+import '../api/api_client.dart';
+import '../api/endpoints.dart';
+
 /// Firebase messaging service for handling push notifications.
 ///
 /// This service handles:
@@ -31,14 +34,17 @@ class FirebaseMessagingService {
       debugPrint('User declined or has not granted notification permission');
     }
 
-    // Get FCM token
+    // Get FCM token and send to backend
     final token = await _messaging.getToken();
-    debugPrint('FCM Token: $token');
+    if (token != null) {
+      debugPrint('FCM Token: $token');
+      _sendTokenToBackend(token);
+    }
 
     // Handle token refresh
     _messaging.onTokenRefresh.listen((newToken) {
       debugPrint('FCM Token refreshed: $newToken');
-      // Send new token to backend
+      _sendTokenToBackend(newToken);
     });
 
     // Handle foreground messages
@@ -51,20 +57,38 @@ class FirebaseMessagingService {
     final initialMessage = await _messaging.getInitialMessage();
     if (initialMessage != null) {
       debugPrint('App opened from notification: ${initialMessage.notification?.title}');
-      //Handle navigation based on notification data
+    }
+  }
+
+  /// Send FCM token to backend for push notifications.
+  Future<void> _sendTokenToBackend(String token) async {
+    try {
+      await ApiClient.instance.post(
+        Endpoints.v1Operations,
+        body: {
+          'action': 'push.subscribe',
+          'token': token,
+          'platform': defaultTargetPlatform == TargetPlatform.android
+              ? 'android'
+              : defaultTargetPlatform == TargetPlatform.iOS
+                  ? 'ios'
+                  : 'web',
+        },
+      );
+      debugPrint('FCM token sent to backend');
+    } catch (e) {
+      debugPrint('Failed to send FCM token to backend: $e');
     }
   }
 
   /// Handle foreground message.
   void _handleForegroundMessage(RemoteMessage message) {
     debugPrint('Received foreground message: ${message.notification?.title}');
-    // Show in-app notification or update UI
   }
 
   /// Handle message opened app from background.
   void _handleMessageOpenedApp(RemoteMessage message) {
     debugPrint('App opened from notification: ${message.notification?.title}');
-    //Navigate to appropriate screen based on notification data
   }
 
   /// Get the current FCM token.

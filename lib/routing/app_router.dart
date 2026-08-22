@@ -10,6 +10,16 @@ import '../features/supervisor/supervisor_dashboard_screen.dart';
 import '../features/waiter/dashboard/waiter_dashboard_screen.dart';
 import '../features/delivery/customer_delivery_screen.dart';
 import '../features/delivery/rider_delivery_screen.dart';
+import '../features/delivery/customer_registration_screen.dart';
+import '../features/settings/settings_screen.dart';
+import '../features/billing/billing_screen.dart';
+import '../features/contact/contact_screen.dart';
+import '../features/about/about_brainyte_screen.dart';
+import '../features/password_reset/password_reset_screen.dart';
+import '../features/feedback/feedback_screen.dart';
+import '../features/rate_app/rate_this_app_screen.dart';
+import '../features/help/help_screen.dart';
+import '../features/billing/customer_billing_screen.dart';
 
 class AppRouter {
   static const String login = '/login';
@@ -22,9 +32,19 @@ class AppRouter {
   static const String owner = '/owner';
   static const String customerDelivery = '/delivery';
   static const String riderDelivery = '/rider-delivery';
+  static const String settings = '/settings';
+  static const String billing = '/billing';
+  static const String customerBilling = '/customer-billing';
+  static const String contact = '/contact';
+  static const String about = '/about';
+  static const String passwordReset = '/password-reset';
+  static const String customerRegistration = '/customer-registration';
+  static const String feedback = '/feedback';
+  static const String rateApp = '/rate-app';
+  static const String help = '/help';
 
-  static Route<dynamic> onGenerateRoute(RouteSettings settings) {
-    switch (settings.name) {
+  static Route<dynamic> onGenerateRoute(RouteSettings routeSettings) {
+    switch (routeSettings.name) {
       case '/':
       case login:
         return MaterialPageRoute<void>(
@@ -33,48 +53,98 @@ class AppRouter {
         );
       case waiter:
         return MaterialPageRoute<void>(
-          settings: settings,
+          settings: routeSettings,
           builder: (_) => const WaiterDashboardScreen(),
         );
       case kitchen:
         return MaterialPageRoute<void>(
-          settings: settings,
+          settings: routeSettings,
           builder: (_) => const KitchenDashboardScreen(),
         );
       case bar:
         return MaterialPageRoute<void>(
-          settings: settings,
+          settings: routeSettings,
           builder: (_) => const BarDashboardScreen(),
         );
       case admin:
         return MaterialPageRoute<void>(
-          settings: settings,
+          settings: routeSettings,
           builder: (_) => const AdminDashboardScreen(),
         );
       case manager:
         return MaterialPageRoute<void>(
-          settings: settings,
+          settings: routeSettings,
           builder: (_) => const ManagerDashboardScreen(),
         );
       case supervisor:
         return MaterialPageRoute<void>(
-          settings: settings,
+          settings: routeSettings,
           builder: (_) => const SupervisorDashboardScreen(),
         );
       case owner:
         return MaterialPageRoute<void>(
-          settings: settings,
+          settings: routeSettings,
           builder: (_) => const OwnerDashboardScreen(),
         );
       case customerDelivery:
         return MaterialPageRoute<void>(
-          settings: settings,
+          settings: routeSettings,
           builder: (_) => const CustomerDeliveryScreen(),
         );
       case riderDelivery:
         return MaterialPageRoute<void>(
-          settings: settings,
+          settings: routeSettings,
           builder: (_) => const RiderDeliveryScreen(),
+        );
+      case settings:
+        return MaterialPageRoute<void>(
+          settings: routeSettings,
+          builder: (_) => const SettingsScreen(),
+        );
+      case billing:
+        return MaterialPageRoute<void>(
+          settings: routeSettings,
+          builder: (_) => const BillingScreen(),
+        );
+      case customerBilling:
+        return MaterialPageRoute<void>(
+          settings: routeSettings,
+          builder: (_) => const CustomerBillingScreen(),
+        );
+      case contact:
+        return MaterialPageRoute<void>(
+          settings: routeSettings,
+          builder: (_) => const ContactScreen(),
+        );
+      case about:
+        return MaterialPageRoute<void>(
+          settings: routeSettings,
+          builder: (_) => const AboutBrainyteScreen(),
+        );
+      case passwordReset:
+        return MaterialPageRoute<void>(
+          settings: routeSettings,
+          builder: (_) => const PasswordResetScreen(),
+        );
+      case customerRegistration:
+        return MaterialPageRoute<void>(
+          settings: routeSettings,
+          builder: (_) => const CustomerRegistrationScreen(),
+        );
+      case feedback:
+        return MaterialPageRoute<void>(
+          settings: routeSettings,
+          builder: (_) => const FeedbackScreen(),
+        );
+      case rateApp:
+        return MaterialPageRoute<void>(
+          settings: routeSettings,
+          builder: (_) => const RateThisAppScreen(),
+        );
+      case help:
+        return MaterialPageRoute<void>(
+          settings: routeSettings,
+          builder: (_) => const HelpScreen(),
         );
       default:
         return MaterialPageRoute<void>(
@@ -84,7 +154,7 @@ class AppRouter {
     }
   }
 
-  static Route<dynamic> onUnknownRoute(RouteSettings settings) {
+  static Route<dynamic> onUnknownRoute(RouteSettings routeSettings) {
     return MaterialPageRoute<void>(
       settings: const RouteSettings(name: login),
       builder: (_) => const LoginScreen(),

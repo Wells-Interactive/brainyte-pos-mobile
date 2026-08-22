@@ -9,6 +9,7 @@ import '../../core/repositories/admin_repository.dart';
 import '../../core/utils/currency.dart';
 import '../../widgets/confirm_exit_scope.dart';
 import '../../widgets/loading_indicator.dart';
+import '../../widgets/role_based_drawer.dart';
 
 class AdminDashboardScreen extends StatefulWidget {
   const AdminDashboardScreen({super.key});
@@ -74,7 +75,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           ),
         ],
       ),
-      drawer: _buildDrawer(),
+      drawer: const RoleBasedDrawer(role: 'admin', currentRoute: '/admin'),
       body: _loading
           ? const LoadingIndicator()
           : _stats == null
@@ -173,45 +174,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                       ],
                     ),
                   ),
-),
-      ),
-    );
-  }
-
-  Widget _buildDrawer() {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(color: AppColors.primary),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Icon(Icons.admin_panel_settings, size: 40, color: Colors.white),
-                SizedBox(height: 8),
-                Text('Admin Panel', style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w800)),
-                Text('Full System Overview', style: TextStyle(color: Colors.white70)),
-              ],
-            ),
-          ),
-          ListTile(
-            leading: const Icon(Icons.dashboard),
-            title: const Text('Dashboard'),
-            selected: true,
-            onTap: () => Navigator.pop(context),
-          ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.logout),
-            title: const Text('Logout'),
-            onTap: () {
-              Navigator.pop(context);
-              _logout();
-            },
-          ),
-        ],
+                ),
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/api/api_client.dart';
+import '../../core/api/endpoints.dart';
 import '../../core/constants/colors.dart';
 import '../../core/repositories/auth_repository.dart';
 import '../../core/utils/error_handler.dart';
@@ -21,12 +22,39 @@ class _LoginScreenState extends State<LoginScreen> {
   final _authRepository = AuthRepository(ApiClient.instance);
   bool _isSubmitting = false;
   bool _obscurePassword = true;
+  bool _homeDeliveryEnabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSettings();
+  }
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadSettings() async {
+    try {
+      final result = await ApiClient.instance.get<Map<String, dynamic>>(
+        Endpoints.legacySettings,
+      );
+      if (result.success && result.data != null) {
+        final data = result.data!;
+        final settings = data['settings'] as Map<String, dynamic>?;
+        if (settings != null) {
+          final enabled = settings['home_delivery_enabled']?.toString() == '1';
+          if (mounted) {
+            setState(() => _homeDeliveryEnabled = enabled);
+          }
+        }
+      }
+    } catch (e) {
+      // Use default false
+    }
   }
 
   Future<void> _submitLogin() async {
@@ -94,17 +122,24 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Logo area
                     Container(
                       padding: const EdgeInsets.all(24),
                       decoration: BoxDecoration(
                         color: AppColors.primary.withValues(alpha: 0.15),
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(
-                        Icons.restaurant_menu,
-                        size: 64,
-                        color: AppColors.accent,
+                      child: Image.asset(
+                        'assets/images/app_icon.png',
+                        width: 64,
+                        height: 64,
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) {
+                          return const Icon(
+                            Icons.restaurant_menu,
+                            size: 64,
+                            color: AppColors.accent,
+                          );
+                        },
                       ),
                     ),
                     const SizedBox(height: 24),
@@ -128,7 +163,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     const SizedBox(height: 40),
-                    // Login card
                     Card(
                       elevation: 8,
                       shape: RoundedRectangleBorder(
@@ -155,15 +189,15 @@ class _LoginScreenState extends State<LoginScreen> {
                               decoration: InputDecoration(
                                 labelText: 'Email',
                                 hintText: 'Enter your email',
-                                prefixIcon: const Icon(Icons.email_outlined),
+                                prefixIcon: Icon(Icons.email_outlined),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(14),
                                 ),
                               ),
                               validator: (value) =>
                                   value == null || value.trim().isEmpty
-                                  ? 'Email is required'
-                                  : null,
+                                      ? 'Email is required'
+                                      : null,
                             ),
                             const SizedBox(height: 16),
                             TextFormField(
@@ -191,8 +225,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               validator: (value) =>
                                   value == null || value.isEmpty
-                                  ? 'Password is required'
-                                  : null,
+                                      ? 'Password is required'
+                                      : null,
                             ),
                             const SizedBox(height: 28),
                             SizedBox(
@@ -223,6 +257,25 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 ),
                               ),
+                            ),
+                            if (_homeDeliveryEnabled) ...[
+                              const SizedBox(height: 12),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pushReplacementNamed(
+                                    AppRouter.customerRegistration,
+                                  );
+                                },
+                                child: const Text('Register as Customer'),
+                              ),
+                            ],
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pushReplacementNamed(
+                                  AppRouter.passwordReset,
+                                );
+                              },
+                              child: const Text('Forgot password?'),
                             ),
                           ],
                         ),

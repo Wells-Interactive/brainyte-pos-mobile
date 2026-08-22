@@ -14,6 +14,7 @@ import '../../../widgets/empty_state.dart';
 import '../../../widgets/menu_card.dart';
 import '../../../widgets/order_tile.dart';
 import '../../../widgets/table_card.dart';
+import '../../../widgets/role_based_drawer.dart';
 
 class WaiterDashboardScreen extends StatefulWidget {
   const WaiterDashboardScreen({super.key});
@@ -94,6 +95,79 @@ class _WaiterDashboardScreenState extends State<WaiterDashboardScreen> {
     await ApiClient.instance.clearSession();
     if (!mounted) return;
     Navigator.of(context).pushReplacementNamed('/login');
+  }
+
+  Future<void> _showCancelOrderDialog() async {
+    if (_selectedTableId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please select a table first'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+
+    final reasonController = TextEditingController();
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Cancel Order'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Table: $_selectedTableId'),
+            const SizedBox(height: 16),
+            TextField(
+              controller: reasonController,
+              decoration: const InputDecoration(
+                labelText: 'Reason for cancellation',
+                hintText: 'Enter reason...',
+                border: OutlineInputBorder(),
+              ),
+              maxLines: 3,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('No'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: FilledButton.styleFrom(backgroundColor: Colors.red),
+            child: const Text('Yes, Cancel'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true || reasonController.text.trim().isEmpty) return;
+
+    final result = await _orderRepository.requestCancellation(
+      orderId: _selectedTableId!,
+      reason: reasonController.text.trim(),
+    );
+
+    if (!mounted) return;
+
+    if (result.success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Cancellation request submitted'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result.error ?? 'Unable to request cancellation'),
+          backgroundColor: Colors.red.shade700,
+        ),
+      );
+    }
   }
 
   List<MenuItem> get _filteredMenu {
@@ -297,12 +371,18 @@ class _WaiterDashboardScreenState extends State<WaiterDashboardScreen> {
               ),
             ),
           IconButton(
+            icon: const Icon(Icons.cancel_outlined),
+            tooltip: 'Cancel Order',
+            onPressed: _showCancelOrderDialog,
+          ),
+          IconButton(
             icon: const Icon(Icons.logout),
             tooltip: 'Logout',
             onPressed: _logout,
           ),
         ],
       ),
+      drawer: const RoleBasedDrawer(role: 'waiter', currentRoute: '/waiter'),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : LayoutBuilder(

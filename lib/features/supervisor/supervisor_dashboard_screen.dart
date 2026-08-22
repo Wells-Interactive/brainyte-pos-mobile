@@ -8,6 +8,7 @@ import '../../core/constants/colors.dart';
 import '../../core/utils/currency.dart';
 import '../../widgets/confirm_exit_scope.dart';
 import '../../widgets/loading_indicator.dart';
+import '../../widgets/role_based_drawer.dart';
 
 class SupervisorDashboardScreen extends StatefulWidget {
   const SupervisorDashboardScreen({super.key});
@@ -86,6 +87,7 @@ class _SupervisorDashboardScreenState extends State<SupervisorDashboardScreen> {
           ),
         ],
       ),
+      drawer: const RoleBasedDrawer(role: 'supervisor', currentRoute: '/supervisor'),
       body: _loading
           ? const LoadingIndicator()
           : _stats == null

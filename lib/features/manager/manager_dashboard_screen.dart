@@ -8,6 +8,7 @@ import '../../core/constants/colors.dart';
 import '../../core/utils/currency.dart';
 import '../../widgets/confirm_exit_scope.dart';
 import '../../widgets/loading_indicator.dart';
+import '../../widgets/role_based_drawer.dart';
 
 class ManagerDashboardScreen extends StatefulWidget {
   const ManagerDashboardScreen({super.key});
@@ -20,13 +21,19 @@ class _ManagerDashboardScreenState extends State<ManagerDashboardScreen> {
   final _apiClient = ApiClient.instance;
   Map<String, dynamic>? _stats;
   bool _loading = true;
+  List<dynamic> _pendingCancellations = const [];
+  bool _loadingCancellations = false;
   late Timer _timer;
 
   @override
   void initState() {
     super.initState();
     _loadStats();
-    _timer = Timer.periodic(const Duration(seconds: 10), (_) => _loadStats());
+    _loadPendingCancellations();
+    _timer = Timer.periodic(const Duration(seconds: 10), (_) {
+      _loadStats();
+      _loadPendingCancellations();
+    });
   }
 
   @override
@@ -48,17 +55,7 @@ class _ManagerDashboardScreenState extends State<ManagerDashboardScreen> {
         _loading = false;
       });
     } else {
-      // Fallback to legacy
-      final legacyResult = await _apiClient.getLegacy('${Endpoints.legacyStatus}?stats=1');
-      if (!mounted) return;
-      if (legacyResult.success && legacyResult.data != null) {
-        setState(() {
-          _stats = legacyResult.data;
-          _loading = false;
-        });
-      } else {
-        setState(() => _loading = false);
-      }
+      setState(() => _loading = false);
     }
   }
 
@@ -66,6 +63,51 @@ class _ManagerDashboardScreenState extends State<ManagerDashboardScreen> {
     await _apiClient.clearSession();
     if (!mounted) return;
     Navigator.of(context).pushReplacementNamed('/login');
+  }
+
+  Future<void> _loadPendingCancellations() async {
+    setState(() => _loadingCancellations = true);
+    final result = await _apiClient.get<Map<String, dynamic>>(
+      Endpoints.v1Operations,
+      queryParameters: {'resource': 'cancellations'},
+    );
+    if (!mounted) return;
+    setState(() {
+      if (result.success && result.data != null) {
+        _pendingCancellations = result.data!['requests'] as List<dynamic>? ?? const [];
+      } else {
+        _pendingCancellations = const [];
+      }
+      _loadingCancellations = false;
+    });
+  }
+
+  Future<void> _reviewCancellation(int requestId, String decision) async {
+    final result = await _apiClient.post<Map<String, dynamic>>(
+      Endpoints.v1Operations,
+      body: {
+        'action': 'cancel.review',
+        'request_id': requestId,
+        'decision': decision,
+      },
+    );
+    if (!mounted) return;
+    if (result.success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Cancellation request $decision'),
+          backgroundColor: decision == 'approved' ? Colors.green : Colors.orange,
+        ),
+      );
+      _loadPendingCancellations();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result.error ?? 'Unable to review cancellation'),
+          backgroundColor: Colors.red.shade700,
+        ),
+      );
+    }
   }
 
   @override
@@ -82,49 +124,12 @@ class _ManagerDashboardScreenState extends State<ManagerDashboardScreen> {
           ),
         ],
       ),
-      drawer: _buildDrawer(),
+      drawer: const RoleBasedDrawer(role: 'manager', currentRoute: '/manager'),
       body: _loading
           ? const LoadingIndicator()
           : _stats == null
               ? const Center(child: Text('Unable to load data'))
               : _buildContent(),
-      ),
-    );
-  }
-
-  Widget _buildDrawer() {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(color: AppColors.primary),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Icon(Icons.analytics, size: 40, color: Colors.white),
-                SizedBox(height: 8),
-                Text('Manager Panel', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w700)),
-                Text('Overview & Reports', style: TextStyle(color: Colors.white70)),
-              ],
-            ),
-          ),
-          ListTile(
-            leading: const Icon(Icons.dashboard),
-            title: const Text('Dashboard'),
-            selected: true,
-            onTap: () => Navigator.pop(context),
-          ),
-          ListTile(
-            leading: const Icon(Icons.logout),
-            title: const Text('Logout'),
-            onTap: () {
-              Navigator.pop(context);
-              _logout();
-            },
-          ),
-        ],
       ),
     );
   }
@@ -227,6 +232,41 @@ class _ManagerDashboardScreenState extends State<ManagerDashboardScreen> {
             ),
           ),
           const SizedBox(height: 24),
+          if (_pendingCancellations.isNotEmpty) ...[
+            Text('Pending Cancellation Requests', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
+            const SizedBox(height: 12),
+            Card(
+              color: Colors.orange.shade50,
+              child: Column(
+                children: _pendingCancellations.map((request) {
+                  final req = request as Map<String, dynamic>;
+                  return ListTile(
+                    leading: const Icon(Icons.warning_amber_rounded, color: Colors.orange),
+                    title: Text('Order #${req['order_id']} - Table ${req['table_id']}'),
+                    subtitle: Text('Reason: ${req['reason'] ?? 'No reason'}'),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.check_circle, color: Colors.green),
+                          tooltip: 'Approve',
+                          onPressed: () => _reviewCancellation((req['id'] as num).toInt(), 'approved'),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.cancel, color: Colors.red),
+                          tooltip: 'Reject',
+                          onPressed: () => _reviewCancellation((req['id'] as num).toInt(), 'rejected'),
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ] else if (!_loadingCancellations) ...[
+            const SizedBox(height: 8),
+            Text('No pending cancellation requests', style: TextStyle(color: Colors.grey.shade600)),
+          ],
           if (topItems.isNotEmpty) ...[
             Text('Top Selling Items', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
             const SizedBox(height: 12),

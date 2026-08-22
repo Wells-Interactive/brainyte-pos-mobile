@@ -6,6 +6,7 @@ import 'package:latlong2/latlong.dart';
 import '../../core/api/api_client.dart';
 import '../../core/api/endpoints.dart';
 import '../../widgets/confirm_exit_scope.dart';
+import '../../widgets/role_based_drawer.dart';
 
 class RiderDeliveryScreen extends StatefulWidget {
   const RiderDeliveryScreen({super.key});
@@ -70,6 +71,7 @@ class _RiderDeliveryScreenState extends State<RiderDeliveryScreen> {
   Widget build(BuildContext context) => ConfirmExitScope(
     child: Scaffold(
       appBar: AppBar(title: const Text('Rider Deliveries')),
+      drawer: const RoleBasedDrawer(role: 'rider', currentRoute: '/rider-delivery'),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : RefreshIndicator(

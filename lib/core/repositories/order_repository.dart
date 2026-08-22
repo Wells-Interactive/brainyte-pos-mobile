@@ -95,4 +95,20 @@ class OrderRepository {
 
     return ApiResponse.success(orders, statusCode: result.statusCode);
   }
+
+  /// Request cancellation for an order (waiter only).
+  Future<ApiResponse<Map<String, dynamic>>> requestCancellation({
+    required int orderId,
+    required String reason,
+  }) async {
+    return _client.post<Map<String, dynamic>>(
+      Endpoints.v1Operations,
+      body: {
+        'action': 'cancel.request',
+        'order_id': orderId,
+        'reason': reason,
+      },
+      onData: (data) => data,
+    );
+  }
 }

@@ -8,6 +8,7 @@ import '../../core/repositories/order_repository.dart';
 import '../../core/utils/error_handler.dart';
 import '../../widgets/confirm_exit_scope.dart';
 import '../../widgets/loading_indicator.dart';
+import '../../widgets/role_based_drawer.dart';
 
 class BarDashboardScreen extends StatefulWidget {
   const BarDashboardScreen({super.key});
@@ -123,6 +124,7 @@ class _BarDashboardScreenState extends State<BarDashboardScreen> {
           ),
         ],
       ),
+      drawer: const RoleBasedDrawer(role: 'bar', currentRoute: '/bar'),
       body: _loading
           ? const LoadingIndicator()
           : _items.isEmpty

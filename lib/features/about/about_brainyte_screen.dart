@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 
-/// About Brainyte screen displaying information about the company.
 class AboutBrainyteScreen extends StatelessWidget {
   const AboutBrainyteScreen({super.key});
+
+  static const String _aboutText =
+      'Brainyte Restaurant POS is a comprehensive point-of-sale system designed for modern restaurants. '
+      'Our platform streamlines operations by connecting waiters, kitchen staff, bar staff, managers, and customers '
+      'through a unified digital experience.\n\n'
+      'Features include real-time order management, table tracking, inventory control, '
+      'detailed reporting, and mobile accessibility for both staff and customers.\n\n'
+      'Built with performance and reliability in mind, Brainyte helps restaurants of all sizes '
+      'deliver exceptional service while optimizing operational efficiency.';
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +24,6 @@ class AboutBrainyteScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Logo or App Icon
             Center(
               child: Icon(
                 Icons.restaurant,
@@ -25,52 +32,39 @@ class AboutBrainyteScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            // App Name
             Center(
               child: Text(
                 'Brainyte Restaurant POS',
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
               ),
             ),
             const SizedBox(height: 8),
-            // Version
             Center(
               child: Text(
                 'Version 1.0.0',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
               ),
             ),
             const Divider(height: 32),
-            // About Text
             Text(
               'About Brainyte',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: 8),
-            Text(
-              'Brainyte Restaurant POS is a comprehensive point-of-sale system designed for modern restaurants. '
-              'Our platform streamlines operations by connecting waiters, kitchen staff, bar staff, managers, and customers '
-              'through a unified digital experience.\n\n'
-              'Features include real-time order management, table tracking, inventory control, '
-              'detailed reporting, and mobile accessibility for both staff and customers.\n\n'
-              'Built with performance and reliability in mind, Brainyte helps restaurants of all sizes '
-              'deliver exceptional service while optimizing operational efficiency.',
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
+            Text(_aboutText, style: Theme.of(context).textTheme.bodyLarge),
             const SizedBox(height: 24),
-            // Company Info
             Text(
               'Contact Information',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: 8),
             _buildInfoRow(
@@ -92,7 +86,6 @@ class AboutBrainyteScreen extends StatelessWidget {
               value: 'www.wellsint.site/brainyte',
             ),
             const Spacer(),
-            // Copyright
             Center(
               child: Text(
                 '© ${DateTime.now().year} Brainyte. All rights reserved.',
