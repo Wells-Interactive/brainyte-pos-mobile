@@ -47,4 +47,7 @@ class Endpoints {
   static const String v1CustomerBilling = '/API/v1/customer/billing.php';
   static const String v1Payments = '/API/v1/payments/index.php';
   static const String v1Operations = '/API/v1/operations/index.php';
+  static const String v1Miscellaneous = '/API/v1/miscellaneous/index.php';
+  static const String v1AdminCustomers = '/API/v1/admin/customers.php';
+  static const String v1Tables = '/API/v1/tables/index.php';
 }

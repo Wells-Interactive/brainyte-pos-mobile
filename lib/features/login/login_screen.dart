@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/api/api_client.dart';
 import '../../core/api/endpoints.dart';
 import '../../core/constants/colors.dart';
+import '../../core/constants/login_strings.dart';
 import '../../core/repositories/auth_repository.dart';
 import '../../core/utils/error_handler.dart';
 import '../../routing/app_router.dart';
@@ -144,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 24),
                     const Text(
-                      'Brainyte POS',
+                      LoginStrings.appName,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 32,
@@ -155,7 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Restaurant Management System',
+                      LoginStrings.appSubtitle,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 14,
@@ -174,7 +175,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             const Text(
-                              'Sign In',
+                              LoginStrings.signIn,
                               style: TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.w700,
@@ -187,8 +188,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               keyboardType: TextInputType.emailAddress,
                               textInputAction: TextInputAction.next,
                               decoration: InputDecoration(
-                                labelText: 'Email',
-                                hintText: 'Enter your email',
+                                labelText: LoginStrings.emailLabel,
+                                hintText: LoginStrings.emailHint,
                                 prefixIcon: Icon(Icons.email_outlined),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(14),
@@ -206,8 +207,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               textInputAction: TextInputAction.done,
                               onFieldSubmitted: (_) => _submitLogin(),
                               decoration: InputDecoration(
-                                labelText: 'Password',
-                                hintText: 'Enter your password',
+                                labelText: LoginStrings.passwordLabel,
+                                hintText: LoginStrings.passwordHint,
                                 prefixIcon: const Icon(Icons.lock_outlined),
                                 suffixIcon: IconButton(
                                   icon: Icon(
@@ -250,7 +251,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       )
                                     : const Icon(Icons.login, size: 20),
                                 label: Text(
-                                  _isSubmitting ? 'Signing in...' : 'Sign In',
+                                  _isSubmitting ? LoginStrings.signingIn : LoginStrings.signInButton,
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
@@ -266,7 +267,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     AppRouter.customerRegistration,
                                   );
                                 },
-                                child: const Text('Register as Customer'),
+                                child: const Text(LoginStrings.registerAsCustomer),
                               ),
                             ],
                             TextButton(
@@ -275,7 +276,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   AppRouter.passwordReset,
                                 );
                               },
-                              child: const Text('Forgot password?'),
+                              child: const Text(LoginStrings.forgotPassword),
                             ),
                           ],
                         ),

@@ -20,6 +20,8 @@ import '../features/feedback/feedback_screen.dart';
 import '../features/rate_app/rate_this_app_screen.dart';
 import '../features/help/help_screen.dart';
 import '../features/billing/customer_billing_screen.dart';
+import '../features/waiter/miscellaneous_orders_screen.dart';
+import '../features/admin/customer_management_screen.dart';
 
 class AppRouter {
   static const String login = '/login';
@@ -42,6 +44,8 @@ class AppRouter {
   static const String feedback = '/feedback';
   static const String rateApp = '/rate-app';
   static const String help = '/help';
+  static const String miscellaneousOrders = '/miscellaneous-orders';
+  static const String customerManagement = '/customer-management';
 
   static Route<dynamic> onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
@@ -145,6 +149,16 @@ class AppRouter {
         return MaterialPageRoute<void>(
           settings: routeSettings,
           builder: (_) => const HelpScreen(),
+        );
+      case miscellaneousOrders:
+        return MaterialPageRoute<void>(
+          settings: routeSettings,
+          builder: (_) => const MiscellaneousOrdersScreen(),
+        );
+      case customerManagement:
+        return MaterialPageRoute<void>(
+          settings: routeSettings,
+          builder: (_) => const CustomerManagementScreen(),
         );
       default:
         return MaterialPageRoute<void>(

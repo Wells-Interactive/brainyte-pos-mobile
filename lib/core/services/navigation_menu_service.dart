@@ -94,9 +94,21 @@ class NavigationMenuService {
         allowedRoles: [roleAdmin, roleOwner, roleManager, roleSupervisor, roleWaiter, roleKitchen, roleBar, roleCustomer, roleRider],
       ),
       NavigationMenuItem(
-        title: 'Billing',
-        icon: Icons.payment,
-        route: AppRouter.billing,
+        title: 'Miscellaneous Orders',
+        icon: Icons.merge_type_outlined,
+        route: AppRouter.miscellaneousOrders,
+        allowedRoles: [roleWaiter],
+      ),
+      NavigationMenuItem(
+        title: 'Customers',
+        icon: Icons.people_outline,
+        route: AppRouter.customerManagement,
+        allowedRoles: [roleAdmin, roleOwner],
+      ),
+      NavigationMenuItem(
+        title: 'Delivery',
+        icon: Icons.delivery_dining,
+        route: AppRouter.customerDelivery,
         allowedRoles: [roleAdmin, roleOwner, roleManager, roleSupervisor, roleWaiter, roleCustomer],
       ),
       NavigationMenuItem(
