@@ -4,7 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/api/api_client.dart';
 import 'core/providers/auth_provider.dart';
-import 'core/services/firebase_service.dart';
+// TODO: Re-enable Firebase after crash investigation
+// import 'core/services/firebase_service.dart';
 import 'routing/app_router.dart';
 import 'features/login/login_screen.dart';
 import 'theme/app_theme.dart';
@@ -30,8 +31,8 @@ Future<void> main() async {
     // Initialize API client
     await ApiClient.instance.initialize();
 
-    // Initialize Firebase (non-blocking, continues if fails)
-    await FirebaseService().initialize();
+    // TODO: Re-enable Firebase after crash investigation
+    // await FirebaseService().initialize();
   } catch (e, stack) {
     FlutterError.reportError(FlutterErrorDetails(
       exception: e,

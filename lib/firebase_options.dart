@@ -56,13 +56,12 @@ class DefaultFirebaseOptions {
     projectId: 'brainyte-pos',
     storageBucket: 'brainyte-pos.firebasestorage.app',
   );
-
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyD-cNqrdnRlzzTLd2cP7VoZAuXrpB_ieew',
     appId: '1:290847724089:ios:0f9feb24ba5da1742473e8',
     messagingSenderId: '290847724089',
     projectId: 'brainyte-pos',
     storageBucket: 'brainyte-pos.firebasestorage.app',
-    iosBundleId: 'com.wellsint.brainyte.RestaurantPos',
+    iosBundleId: 'com.example.brainyteRestaurantPos',
   );
 }

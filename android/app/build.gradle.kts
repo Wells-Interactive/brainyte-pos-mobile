@@ -1,8 +1,9 @@
 plugins {
     id("com.android.application")
-    id("com.google.gms.google-services")
-    id("com.google.firebase.firebase-perf")
-    id("com.google.firebase.crashlytics")
+    // TODO: Re-enable Firebase after crash investigation
+    // id("com.google.gms.google-services")
+    // id("com.google.firebase.firebase-perf")
+    // id("com.google.firebase.crashlytics")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
@@ -59,13 +60,10 @@ kotlin {
 
 flutter {
     source = "../.."
-dependencies {
-    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
-    implementation("com.google.firebase:firebase-messaging")
-    implementation("com.google.firebase:firebase-crashlytics")
-}
-
-flutter {
-    source = "../.."
-}
+    // TODO: Re-enable Firebase dependencies after crash investigation
+    // dependencies {
+    //     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+    //     implementation("com.google.firebase:firebase-messaging")
+    //     implementation("com.google.firebase:firebase-crashlytics")
+    // }
 }
