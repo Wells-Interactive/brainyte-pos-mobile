@@ -455,7 +455,7 @@ All Rights Reserved.
 
 ### 🌐 Wells Interactive
 
-[Website](http://www.wellsint.site)
+[Website](http://www.wellsint.site) wellsintltd@gmail.com
 
 ### 🧠 Brainyte
 
