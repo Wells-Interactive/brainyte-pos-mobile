@@ -30,7 +30,7 @@ class _WaiterDashboardScreenState extends State<WaiterDashboardScreen> {
   final _searchController = TextEditingController();
 
   bool _isLoading = true;
-  final String _selectedCategory = 'all';
+  String _selectedCategory = 'all';
   int? _selectedTableId;
   List<RestaurantTable> _tables = const [];
   List<MenuItem> _menu = const [];
