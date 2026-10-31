@@ -1,75 +1,140 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+import '../../firebase_options.dart';
 import '../api/api_client.dart';
 import '../api/endpoints.dart';
 
-/// Firebase messaging service for handling push notifications.
-///
-/// This service handles:
-/// - Foreground message reception
-/// - Background message handling
-/// - Token management for sending to backend
-/// - Notification permission requests
+const _orderAlertChannelId = 'brainyte_order_alert_v2';
+const _orderAlertChannelName = 'Urgent order alerts';
+
+@pragma('vm:entry-point')
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await FirebaseMessagingService.showDataMessageAlert(message, fullScreen: true);
+}
+
+/// Data-only FCM handler. Every visible alert is produced locally so the
+/// configured urgent channel and custom sound are always used.
 class FirebaseMessagingService {
+  FirebaseMessagingService();
+
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
 
-  /// Initialize Firebase messaging and set up handlers.
+  static void registerBackgroundHandler() {
+    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  }
+
   Future<void> initialize() async {
-    try {
-      // Request permission (iOS/macOS)
-      NotificationSettings settings = await _messaging.requestPermission(
-        alert: true,
-        announcement: false,
-        badge: true,
-        carPlay: false,
-        criticalAlert: false,
-        provisional: false,
-        sound: true,
-      );
+    await _initializeLocalNotifications(requestPermissions: true);
+    final settings = await _messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: true,
+      provisional: false,
+      sound: true,
+    );
+    if (settings.authorizationStatus == AuthorizationStatus.denied) {
+      debugPrint('Notifications are not authorised.');
+    }
 
-      if (settings.authorizationStatus == AuthorizationStatus.authorized ||
-          settings.authorizationStatus == AuthorizationStatus.provisional) {
-        debugPrint('User granted notification permission');
-      } else {
-        debugPrint('User declined or has not granted notification permission');
-      }
+    final token = await _messaging.getToken();
+    if (token != null) await _sendTokenToBackend(token);
+    _messaging.onTokenRefresh.listen(_sendTokenToBackend);
+    FirebaseMessaging.onMessage.listen(
+      (message) => showDataMessageAlert(message, fullScreen: false),
+    );
+    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessageOpenedApp);
+  }
 
-      // Get FCM token and send to backend
-      final token = await _messaging.getToken();
-      if (token != null) {
-        debugPrint('FCM Token: $token');
-        _sendTokenToBackend(token);
-      }
+  static Future<void> _initializeLocalNotifications({
+    required bool requestPermissions,
+  }) async {
+    final plugin = FlutterLocalNotificationsPlugin();
+    const settings = InitializationSettings(
+      android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+      iOS: DarwinInitializationSettings(
+        requestAlertPermission: false,
+        requestBadgePermission: false,
+        requestSoundPermission: false,
+        requestCriticalPermission: false,
+      ),
+    );
+    await plugin.initialize(settings);
 
-      // Handle token refresh
-      _messaging.onTokenRefresh.listen(
-        (newToken) {
-          debugPrint('FCM Token refreshed: $newToken');
-          _sendTokenToBackend(newToken);
-        },
-        onError: (error) {
-          debugPrint('FCM token refresh error: $error');
-        },
-      );
-
-      // Handle foreground messages
-      FirebaseMessaging.onMessage.listen(_handleForegroundMessage);
-
-      // Handle background message tap
-      FirebaseMessaging.onMessageOpenedApp.listen(_handleMessageOpenedApp);
-
-      // Check for initial message (cold start from notification)
-      final initialMessage = await _messaging.getInitialMessage();
-      if (initialMessage != null) {
-        debugPrint('App opened from notification: ${initialMessage.notification?.title}');
-      }
-    } catch (e) {
-      debugPrint('Failed to initialize Firebase Messaging: $e');
+    final android = plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
+    await android?.createNotificationChannel(
+      const AndroidNotificationChannel(
+        _orderAlertChannelId,
+        _orderAlertChannelName,
+        description: 'Loud alerts for new and urgent restaurant orders',
+        importance: Importance.max,
+        playSound: true,
+        enableVibration: true,
+        sound: RawResourceAndroidNotificationSound('order_alert_5s'),
+      ),
+    );
+    if (requestPermissions) {
+      await android?.requestNotificationsPermission();
+      await android?.requestFullScreenIntentPermission();
     }
   }
 
-  /// Send FCM token to backend for push notifications.
+  static Future<void> showDataMessageAlert(
+    RemoteMessage message, {
+    required bool fullScreen,
+  }) async {
+    // Standard FCM notification payloads are intentionally ignored.
+    final data = message.data;
+    if (data.isEmpty) return;
+
+    await _initializeLocalNotifications(requestPermissions: false);
+    final title = data['title']?.trim().isNotEmpty == true
+        ? data['title']!
+        : 'Order update';
+    final body = data['body']?.trim().isNotEmpty == true
+        ? data['body']!
+        : 'A restaurant order needs attention.';
+    final eventType = data['event_type'] ?? data['reference_type'] ?? '';
+    final isOrder = eventType == 'order';
+
+    final android = AndroidNotificationDetails(
+      _orderAlertChannelId,
+      _orderAlertChannelName,
+      channelDescription: 'Loud alerts for new and urgent restaurant orders',
+      importance: Importance.max,
+      priority: Priority.high,
+      playSound: true,
+      sound: const RawResourceAndroidNotificationSound('order_alert_5s'),
+      enableVibration: true,
+      ticker: 'Urgent restaurant order',
+      category: AndroidNotificationCategory.alarm,
+      fullScreenIntent: fullScreen && isOrder,
+    );
+    const ios = DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+      sound: 'order_alert_5s.wav',
+      interruptionLevel: InterruptionLevel.critical,
+      criticalSoundVolume: 1.0,
+    );
+    await FlutterLocalNotificationsPlugin().show(
+      DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      title,
+      body,
+      NotificationDetails(android: android, iOS: ios),
+      payload: data['reference_id'],
+    );
+  }
+
   Future<void> _sendTokenToBackend(String token) async {
     try {
       await ApiClient.instance.post(
@@ -80,38 +145,20 @@ class FirebaseMessagingService {
           'platform': defaultTargetPlatform == TargetPlatform.android
               ? 'android'
               : defaultTargetPlatform == TargetPlatform.iOS
-                  ? 'ios'
-                  : 'web',
+              ? 'ios'
+              : 'web',
         },
       );
-      debugPrint('FCM token sent to backend');
-    } catch (e) {
-      debugPrint('Failed to send FCM token to backend: $e');
+    } catch (error) {
+      debugPrint('Failed to save FCM token: $error');
     }
   }
 
-  /// Handle foreground message.
-  void _handleForegroundMessage(RemoteMessage message) {
-    debugPrint('Received foreground message: ${message.notification?.title}');
-  }
-
-  /// Handle message opened app from background.
   void _handleMessageOpenedApp(RemoteMessage message) {
-    debugPrint('App opened from notification: ${message.notification?.title}');
+    debugPrint('Opened from order notification: ${message.data}');
   }
 
-  /// Get the current FCM token.
-  Future<String?> getToken() async {
-    return await _messaging.getToken();
-  }
-
-  /// Subscribe to a topic.
-  Future<void> subscribeToTopic(String topic) async {
-    await _messaging.subscribeToTopic(topic);
-  }
-
-  /// Unsubscribe from a topic.
-  Future<void> unsubscribeFromTopic(String topic) async {
-    await _messaging.unsubscribeFromTopic(topic);
-  }
+  Future<String?> getToken() => _messaging.getToken();
+  Future<void> subscribeToTopic(String topic) => _messaging.subscribeToTopic(topic);
+  Future<void> unsubscribeFromTopic(String topic) => _messaging.unsubscribeFromTopic(topic);
 }
