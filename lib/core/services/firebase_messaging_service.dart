@@ -9,11 +9,17 @@ import '../api/endpoints.dart';
 
 const _orderAlertChannelId = 'brainyte_order_alert_v2';
 const _orderAlertChannelName = 'Urgent order alerts';
+// Set to true to resume Firebase Cloud Messaging in the mobile app.
+const firebaseMessagingEnabled = false;
 
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  if (!firebaseMessagingEnabled) return;
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await FirebaseMessagingService.showDataMessageAlert(message, fullScreen: true);
+  await FirebaseMessagingService.showDataMessageAlert(
+    message,
+    fullScreen: true,
+  );
 }
 
 /// Data-only FCM handler. Every visible alert is produced locally so the
@@ -24,10 +30,12 @@ class FirebaseMessagingService {
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
 
   static void registerBackgroundHandler() {
+    if (!firebaseMessagingEnabled) return;
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   }
 
   Future<void> initialize() async {
+    if (!firebaseMessagingEnabled) return;
     await _initializeLocalNotifications(requestPermissions: true);
     final settings = await _messaging.requestPermission(
       alert: true,
@@ -91,6 +99,7 @@ class FirebaseMessagingService {
     RemoteMessage message, {
     required bool fullScreen,
   }) async {
+    if (!firebaseMessagingEnabled) return;
     // Standard FCM notification payloads are intentionally ignored.
     final data = message.data;
     if (data.isEmpty) return;
@@ -158,7 +167,13 @@ class FirebaseMessagingService {
     debugPrint('Opened from order notification: ${message.data}');
   }
 
-  Future<String?> getToken() => _messaging.getToken();
-  Future<void> subscribeToTopic(String topic) => _messaging.subscribeToTopic(topic);
-  Future<void> unsubscribeFromTopic(String topic) => _messaging.unsubscribeFromTopic(topic);
+  Future<String?> getToken() =>
+      firebaseMessagingEnabled ? _messaging.getToken() : Future.value(null);
+  Future<void> subscribeToTopic(String topic) async {
+    if (firebaseMessagingEnabled) await _messaging.subscribeToTopic(topic);
+  }
+
+  Future<void> unsubscribeFromTopic(String topic) async {
+    if (firebaseMessagingEnabled) await _messaging.unsubscribeFromTopic(topic);
+  }
 }
