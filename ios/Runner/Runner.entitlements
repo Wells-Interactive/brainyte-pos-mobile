@@ -8,5 +8,7 @@
 	<true/>
 	<key>com.apple.developer.location-services.maps</key>
 	<true/>
+	<key>com.apple.developer.usernotifications.critical-alerts</key>
+	<true/>
 </dict>
 </plist>

@@ -3,6 +3,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../firebase_options.dart';
 import 'firebase_messaging_service.dart';
 
 /// Service for initializing and managing Firebase services.
@@ -23,7 +24,9 @@ class FirebaseService {
     }
 
     try {
-      await Firebase.initializeApp();
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
       debugPrint('Firebase initialized successfully');
 
       // Initialize Crashlytics
