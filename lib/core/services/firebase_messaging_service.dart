@@ -64,7 +64,7 @@ class FirebaseMessagingService {
         requestCriticalPermission: false,
       ),
     );
-    await plugin.initialize(settings);
+    await plugin.initialize(settings: settings);
 
     final android = plugin
         .resolvePlatformSpecificImplementation<
@@ -127,10 +127,10 @@ class FirebaseMessagingService {
       criticalSoundVolume: 1.0,
     );
     await FlutterLocalNotificationsPlugin().show(
-      DateTime.now().millisecondsSinceEpoch ~/ 1000,
-      title,
-      body,
-      NotificationDetails(android: android, iOS: ios),
+      id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      title: title,
+      body: body,
+      notificationDetails: NotificationDetails(android: android, iOS: ios),
       payload: data['reference_id'],
     );
   }
