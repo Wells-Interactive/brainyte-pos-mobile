@@ -27,7 +27,7 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 class FirebaseMessagingService {
   FirebaseMessagingService();
 
-  final FirebaseMessaging _messaging = FirebaseMessaging.instance;
+  late final FirebaseMessaging _messaging = FirebaseMessaging.instance;
 
   static void registerBackgroundHandler() {
     if (!firebaseMessagingEnabled) return;
