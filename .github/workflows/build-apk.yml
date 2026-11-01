@@ -48,7 +48,7 @@ jobs:
           EOF
 
       - name: Build Release APK
-        run: flutter build appbundle --release
+        run: flutter build apk --release
 
       - name: Upload Signed APK
         uses: actions/upload-artifact@v4
