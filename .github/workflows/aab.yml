@@ -127,7 +127,7 @@ jobs:
           echo "- **File:** app-release.aab" >> "$GITHUB_STEP_SUMMARY"
           echo "- **Retention:** 30 days" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "Your signed AAB is available in the workflow Artifacts section." >> "$GITHUB_STEP_SUMMARY"
+          echo "Signed AAB is available in the workflow Artifacts section." >> "$GITHUB_STEP_SUMMARY"
 
       # 12. Remove sensitive signing files
       - name: Clean signing files
