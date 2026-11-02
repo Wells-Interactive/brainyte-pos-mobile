@@ -98,7 +98,7 @@ jobs:
           ls -lah build/app/outputs/bundle/release/
 
           if [ ! -s build/app/outputs/bundle/release/app-release.aab ]; then
-            echo "ERROR: AAB file was not generated."
+            echo "ERROR: The AAB file was not generated."
             exit 1
           fi
 
