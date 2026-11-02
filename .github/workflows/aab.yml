@@ -1,3 +1,4 @@
+```yaml
 name: Build Brainyte POS Android AAB
 
 on:
@@ -21,18 +22,15 @@ jobs:
     timeout-minutes: 45
 
     steps:
-      # 1. Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Install Java 17
       - name: Set up Java 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
-      # 3. Install Flutter
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -40,17 +38,14 @@ jobs:
           channel: stable
           cache: true
 
-      # 4. Verify environment
       - name: Check Flutter and Java versions
         run: |
           flutter --version
           java -version
 
-      # 5. Install Flutter dependencies
       - name: Get Flutter dependencies
         run: flutter pub get
 
-      # 6. Decode Android release keystore
       - name: Decode Android keystore
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
@@ -67,7 +62,6 @@ jobs:
             exit 1
           fi
 
-      # 7. Create Android signing properties
       - name: Create key.properties
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
@@ -86,11 +80,18 @@ jobs:
           storeFile=app/brainyte-pos-release.jks
           EOF
 
-      # 8. Build signed Android App Bundle
+      - name: Verify decoded keystore
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: |
+          keytool -list \
+            -keystore android/app/brainyte-pos-release.jks \
+            -storepass "$KEYSTORE_PASSWORD" \
+            -alias restaurant_mvp
+
       - name: Build Release AAB
         run: flutter build appbundle --release
 
-      # 9. Verify generated AAB
       - name: Verify AAB file
         run: |
           echo "Checking generated Android App Bundle..."
@@ -105,7 +106,6 @@ jobs:
           echo "AAB successfully generated."
           du -h build/app/outputs/bundle/release/app-release.aab
 
-      # 10. Upload AAB to GitHub Actions
       - name: Upload Signed AAB
         uses: actions/upload-artifact@v4
         with:
@@ -115,7 +115,6 @@ jobs:
           compression-level: 0
           retention-days: 30
 
-      # 11. Add build information to workflow summary
       - name: Publish build summary
         if: success()
         run: |
@@ -129,9 +128,9 @@ jobs:
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "Signed AAB is available in the workflow Artifacts section." >> "$GITHUB_STEP_SUMMARY"
 
-      # 12. Remove sensitive signing files
       - name: Clean signing files
         if: always()
         run: |
           rm -f android/key.properties
-          rm -f android/brainyte-pos-release.jks
+          rm -f android/app/brainyte-pos-release.jks
+```
