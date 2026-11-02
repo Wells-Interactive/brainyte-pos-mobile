@@ -60,9 +60,9 @@ jobs:
             exit 1
           fi
 
-          echo "$KEYSTORE_BASE64" | base64 --decode > android/brainyte-pos-release.jks
+          echo "$KEYSTORE_BASE64" | base64 --decode > android/app/brainyte-pos-release.jks
 
-          if [ ! -s android/brainyte-pos-release.jks ]; then
+          if [ ! -s android/app/brainyte-pos-release.jks ]; then
             echo "ERROR: Keystore file is empty or invalid."
             exit 1
           fi
