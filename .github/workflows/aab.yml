@@ -132,4 +132,4 @@ jobs:
         run: |
           rm -f android/key.properties
           rm -f android/app/brainyte-pos-release.jks
-```
+
