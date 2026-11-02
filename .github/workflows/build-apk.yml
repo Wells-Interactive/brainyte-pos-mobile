@@ -44,7 +44,7 @@ jobs:
           storePassword=$KEYSTORE_PASSWORD
           keyPassword=$KEY_PASSWORD
           keyAlias=$KEY_ALIAS
-          storeFile=brainyte-pos-release.jks
+          storeFile=app/brainyte-pos-release.jks
           EOF
 
       - name: Build Release APK
