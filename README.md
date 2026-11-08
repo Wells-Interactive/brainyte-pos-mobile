@@ -82,9 +82,8 @@ Get the latest Android version of Brainyte POS Mobile.
   </a>
 </p>
  **Android:** Download the latest version from Google Play Store, You must have been added to the list to see it Or wait till release date.
-NOTE: This Version is only for demonstration, licensed users will need their own console.
-
----
+NOTE: This Version is only for demonstration, licensed users will need their own console, but we're working to make this app work for all restaurants.
+| <img src="assets/images/ss1.jpg" width="220"> | <img src="assets/images/ss2.png"> |
 
 # ✨ Features
 
