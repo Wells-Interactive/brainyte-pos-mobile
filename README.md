@@ -35,7 +35,7 @@ From **waiters taking table orders**, to **kitchen and bar teams processing orde
 
 ---
 
-# 🚀 One App Does It All
+# 🚀 One App Does It All  (Currently working on all restaurants to use this same app)
 
 Brainyte POS connects the restaurant's major operational areas in one application.
 
@@ -66,6 +66,23 @@ Brainyte POS connects the restaurant's major operational areas in one applicatio
 ```
 
 Different restaurant roles can access the functions relevant to them while working from the same centralized system.
+
+---
+
+
+# 📦 Android Download
+
+## 📱 Download Brainyte POS Mobile
+
+Get the latest Android version of Brainyte POS Mobile.
+
+<p align="center">
+  <a href="https://play.google.com/store/apps/details?id=com.wellsinteractive.brainyte_pos">
+    <img src="https://www.gstatic.com/android/market_images/web/play_prism_hlock_v2_1x.png" alt="Download Brainyte POS">
+  </a>
+</p>
+ **Android:** Download the latest version from Google Play Store, You must have been added to the list to see it Or wait till release date.
+NOTE: This Version is only for demonstration, licensed users will need their own console.
 
 ---
 
@@ -315,21 +332,6 @@ Brainyte POS communicates with a PHP backend through REST APIs.
 
 ---
 
-# 🎨 UI Highlights
-
-* 🎨 Material 3 Design
-* 📱 Mobile-first interface
-* 🌙 Dark-mode-ready styling
-* ⚡ Fast navigation
-* 📐 Responsive layouts
-* 🧩 Reusable components
-* 🗂️ Clean card-based interfaces
-* 🔄 Live status indicators
-* 📊 Dashboard statistics
-* 🔔 Friendly status and error feedback
-* 🧭 Role-specific navigation
-
----
 
 # 📸 Screens & Workspaces
 
@@ -377,44 +379,6 @@ Security-related components include:
 * Configured Brainyte POS API
 
 
-
----
-
-# 📦 Android Download
-
-## 📱 Download Brainyte POS Mobile
-
-Get the latest Android version of Brainyte POS Mobile.
-
-<p align="center">
-  <a href="https://play.google.com/store/apps/details?id=com.wellsinteractive.brainyte_pos">
-    <img src="https://www.gstatic.com/android/market_images/web/play_prism_hlock_v2_1x.png" alt="Download Brainyte POS">
-  </a>
-</p>
-
-> **Android:** Download the latest version from Google Play Store, You must have been added to the list to see it.
-NOTE: This Version is only for demonstration, licensed users will need their own console.
-
----
-
-# 🛣️ Roadmap
-
-Future enhancements can include:
-
-* 🖨️ Expanded thermal printer support
-* 🧾 Advanced receipt templates
-* 💳 Paystack & Paypal Payment integration
-* 📊 Advanced analytics
-* 📈 Business reports
-* 👥 Staff management
-* 🏪 Multi-branch restaurant support
-* 📱 Offline-first operation
-* 🔔 Push notifications
-* 🧾 Tax and discount management
-* 📦 Stock tracking
-* 🔄 Advanced order synchronization
-
----
 
 # 🤝 Contributing
 
