@@ -341,13 +341,37 @@ class ApiClient {
     }
   }
 
-  /// Send a DELETE request and parse v1 response.
-  Future<ApiResponse<T>> delete<T>(
+  /// Send a PATCH request and parse v1 response.
+  Future<ApiResponse<T>> patch<T>(
     String path, {
+    Map<String, dynamic>? body,
     T Function(Map<String, dynamic>)? onData,
   }) async {
     try {
-      final response = await _dio.delete(path);
+      final response = await _dio.patch(path, data: body ?? {});
+      return _parseResponse<T>(
+        response.data,
+        response.statusCode ?? 200,
+        onData: onData ?? ((data) => data as T),
+      );
+    } on DioException catch (error) {
+      return ApiResponse.failure(
+        _extractMessage(error),
+        statusCode: error.response?.statusCode,
+      );
+    } catch (error) {
+      return ApiResponse.failure('Unexpected error: $error');
+    }
+  }
+
+  /// Send a DELETE request and parse v1 response.
+  Future<ApiResponse<T>> delete<T>(
+    String path, {
+    Map<String, dynamic>? body,
+    T Function(Map<String, dynamic>)? onData,
+  }) async {
+    try {
+      final response = await _dio.delete(path, data: body);
       return _parseResponse<T>(
         response.data,
         response.statusCode ?? 200,
@@ -421,6 +445,7 @@ class ApiClient {
     await prefs.remove(AppConstants.userIdKey);
     await prefs.remove(AppConstants.userNameKey);
     await prefs.remove(AppConstants.userEmailKey);
+    await prefs.remove(AppConstants.restaurantNameKey);
   }
 
   /// Store auth data after successful login.
@@ -431,6 +456,7 @@ class ApiClient {
     String userId = '',
     String userName = '',
     String userEmail = '',
+    String restaurantName = '',
   }) async {
     await _storeTokens(accessToken, refreshToken);
     final prefs = await SharedPreferences.getInstance();
@@ -443,6 +469,9 @@ class ApiClient {
     }
     if (userEmail.isNotEmpty) {
       await prefs.setString(AppConstants.userEmailKey, userEmail);
+    }
+    if (restaurantName.isNotEmpty) {
+      await prefs.setString(AppConstants.restaurantNameKey, restaurantName);
     }
   }
 }

@@ -10,5 +10,6 @@ class AppConstants {
   static const String userIdKey = 'user_id';
   static const String userNameKey = 'user_name';
   static const String userEmailKey = 'user_email';
+  static const String restaurantNameKey = 'restaurant_name';
   static const Duration requestTimeout = Duration(seconds: 15);
 }

@@ -33,7 +33,10 @@ It brings essential restaurant operations together in one mobile application, al
 
 From **waiters taking table orders**, to **kitchen and bar teams processing orders**, to **management monitoring sales**, and **delivery staff handling deliveries**, Brainyte POS provides a unified restaurant operation experience.
 
----
+## Connecting a restaurant deployment
+
+The Flutter app uses the existing PHP/MySQL backend. Build a client for each restaurant deployment with that installation's HTTP(S) backend origin:
+
 
 # 🚀 One App Does It All  (Currently working on all restaurants to use this same app)
 
@@ -83,7 +86,12 @@ Get the latest Android version of Brainyte POS Mobile.
 </p>
  **Android:** Download the latest version from Google Play Store, You must have been added to the list to see it Or wait till release date.
 NOTE: This Version is only for demonstration, licensed users will need their own console, but we're working to make this app work for all restaurants.
-| <img src="assets/images/ss1.jpg" width="220"> | <img src="assets/images/ss2.png"> |
+<table>
+  <tr>
+    <td><img src="assets/images/ss1.jpg" width="220"></td>
+    <td><img src="assets/images/ss2.png" width="220"></td>
+  </tr>
+</table>
 
 # ✨ Features
 
@@ -106,95 +114,6 @@ The waiter module provides the complete workflow for taking and managing custome
 * 💰 Open and close customer tables
 * 💵 Automatic order total calculation
 * 🚪 Secure logout
-
----
-
-## 🍳 Kitchen Module
-
-The Kitchen Dashboard provides a dedicated workflow for food preparation.
-
-* 📡 Receive food orders
-* ⏳ Pending orders
-* 👨‍🍳 Preparing orders
-* ✅ Ready orders
-* 🍽️ Served orders
-* ✔️ Complete orders
-* 🔄 Update individual item status
-* ⚡ Live order synchronization
-* 📋 Order and item details
-* ⏱️ Preparation workflow
-
----
-
-## 🍹 Bar Module
-
-The Bar Dashboard provides the same streamlined workflow for beverage orders.
-
-* 📡 Receive drink orders
-* ⏳ Pending
-* 🍸 Preparing
-* ✅ Ready
-* 🍽️ Served
-* ✔️ Completed
-* 🔄 Update drink order status
-* ⚡ Live synchronization
-* 📋 View order and item information
-
----
-
-## 👑 Admin Dashboard
-
-Administrators can monitor restaurant activity from a centralized dashboard.
-
-* 📊 Restaurant overview
-* 💰 Today's revenue
-* 🧾 Orders today
-* 🪑 Occupied tables
-* 🪑 Available tables
-* 📋 Recent orders
-* 🍳 Kitchen queue monitoring
-* 🍹 Bar queue monitoring
-* 👥 Active waiter information
-* 🔄 Refresh analytics
-* 🔐 Secure logout
-
----
-
-## 📊 Manager Dashboard
-
-Management users have access to restaurant operational information and monitoring tools through a dedicated dashboard.
-
-* 📊 Operational overview
-* 📋 Order monitoring
-* 🪑 Table activity
-* 📈 Restaurant activity
-* 🔄 Backend data synchronization
-* 🔐 Role-based access
-
----
-
-## 🏢 Owner Dashboard
-
-Owners have access to the owner-level restaurant overview and operational information.
-
-* 📊 Business overview
-* 💰 Revenue information
-* 🧾 Order activity
-* 🪑 Table activity
-* 📈 Restaurant monitoring
-* 🔐 Owner-level access
-
----
-
-## 🛡️ Supervisor Dashboard
-
-Supervisors can monitor restaurant operations through their dedicated role-based dashboard.
-
-* 📊 Operational monitoring
-* 🧾 Order activity
-* 🪑 Table activity
-* 👥 Staff-related operational visibility
-* 🔄 Live backend synchronization
 
 ---
 
@@ -332,25 +251,6 @@ Brainyte POS communicates with a PHP backend through REST APIs.
 ---
 
 
-# 📸 Screens & Workspaces
-
-* 🔐 Login
-* 🍽️ Waiter View
-* 🪑 Tables
-* 📝 Create Order
-* 🛒 Order Cart
-* 📋 Active Orders
-* 🍳 Kitchen Queue
-* 🍹 Bar Queue
-* 🚚 Customer Delivery
-* 🛵 Rider Deliveries
-* 📊 Admin Monitoring
-* 📈 Manager Dashboard
-* 🏢 Owner Dashboard
-* 🛡️ Supervisor Dashboard
-
----
-
 # 🔐 Security
 
 Brainyte POS uses a role-based authentication workflow with backend API authentication.
@@ -414,4 +314,3 @@ All Rights Reserved.
 [Brainyte](http://www.wellsint.site/brainyte)
 
 </p>
-

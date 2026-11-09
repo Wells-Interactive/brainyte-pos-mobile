@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../features/admin/admin_dashboard_screen.dart';
+import '../features/admin/super_admin_dashboard_screen.dart';
 import '../features/bar/bar_dashboard_screen.dart';
 import '../features/kitchen/kitchen_dashboard_screen.dart';
 import '../features/login/login_screen.dart';
@@ -29,6 +30,7 @@ class AppRouter {
   static const String kitchen = '/kitchen';
   static const String bar = '/bar';
   static const String admin = '/admin';
+  static const String superAdmin = '/super-admin';
   static const String manager = '/manager';
   static const String supervisor = '/supervisor';
   static const String owner = '/owner';
@@ -51,6 +53,7 @@ class AppRouter {
   /// makes startup restoration use the same destinations as a fresh login.
   static String routeForRole(String role) {
     return switch (role.toLowerCase()) {
+      'super_admin' => superAdmin,
       'admin' => admin,
       'owner' => owner,
       'manager' => manager,
@@ -66,6 +69,7 @@ class AppRouter {
   static Widget homeForRole(String role) {
     return switch (routeForRole(role)) {
       admin => const AdminDashboardScreen(),
+      superAdmin => const SuperAdminDashboardScreen(),
       owner => const OwnerDashboardScreen(),
       manager => const ManagerDashboardScreen(),
       supervisor => const SupervisorDashboardScreen(),
@@ -104,6 +108,11 @@ class AppRouter {
         return MaterialPageRoute<void>(
           settings: routeSettings,
           builder: (_) => const AdminDashboardScreen(),
+        );
+      case superAdmin:
+        return MaterialPageRoute<void>(
+          settings: routeSettings,
+          builder: (_) => const SuperAdminDashboardScreen(),
         );
       case manager:
         return MaterialPageRoute<void>(

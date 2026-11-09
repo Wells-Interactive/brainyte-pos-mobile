@@ -9,6 +9,7 @@ import '../../core/repositories/admin_repository.dart';
 import '../../core/utils/currency.dart';
 import '../../widgets/loading_indicator.dart';
 import '../../widgets/role_based_drawer.dart';
+import '../../widgets/staff_list_card.dart';
 
 class AdminDashboardScreen extends StatefulWidget {
   const AdminDashboardScreen({super.key});
@@ -169,6 +170,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                             ),
                           ),
                         ),
+                        const SizedBox(height: 16),
+                        const StaffListCard(),
                       ],
                     ),
                   ),
