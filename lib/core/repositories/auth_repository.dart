@@ -71,6 +71,7 @@ class AuthRepository {
       userId: userId,
       userName: userName,
       userEmail: userEmail,
+      restaurantName: userData['restaurant_name']?.toString() ?? '',
     );
 
     return ApiResponse.success(

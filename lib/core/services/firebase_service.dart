@@ -23,6 +23,12 @@ class FirebaseService {
       return;
     }
 
+    if (!firebaseMessagingEnabled) {
+      debugPrint('Firebase Cloud Messaging is disabled by configuration; skipping Firebase init.');
+      _isInitialized = true;
+      return;
+    }
+
     try {
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,

@@ -9,13 +9,26 @@ import '../api/endpoints.dart';
 
 const _orderAlertChannelId = 'brainyte_order_alert_v2';
 const _orderAlertChannelName = 'Urgent order alerts';
-// Set to true to resume Firebase Cloud Messaging in the mobile app.
-const firebaseMessagingEnabled = false;
+// Build with --dart-define=ENABLE_FIREBASE_MESSAGING=true to enable FCM.
+// This keeps order alerts optional until the backend service account is configured.
+const firebaseMessagingEnabled = bool.fromEnvironment(
+  'ENABLE_FIREBASE_MESSAGING',
+  defaultValue: false,
+);
 
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   if (!firebaseMessagingEnabled) return;
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  if (message.notification != null && message.data.isEmpty) {
+    debugPrint('Ignoring standard FCM notification payload in background.');
+    return;
+  }
+  try {
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  } catch (_) {
+    debugPrint('Firebase background initialization skipped because it is not configured.');
+    return;
+  }
   await FirebaseMessagingService.showDataMessageAlert(
     message,
     fullScreen: true,
@@ -53,9 +66,13 @@ class FirebaseMessagingService {
     final token = await _messaging.getToken();
     if (token != null) await _sendTokenToBackend(token);
     _messaging.onTokenRefresh.listen(_sendTokenToBackend);
-    FirebaseMessaging.onMessage.listen(
-      (message) => showDataMessageAlert(message, fullScreen: false),
-    );
+    FirebaseMessaging.onMessage.listen((message) {
+      if (message.notification != null) {
+        debugPrint('Ignoring standard FCM notification payload; using data-only order alerts.');
+        return;
+      }
+      showDataMessageAlert(message, fullScreen: false);
+    });
     FirebaseMessaging.onMessageOpenedApp.listen(_handleMessageOpenedApp);
   }
 
@@ -63,13 +80,13 @@ class FirebaseMessagingService {
     required bool requestPermissions,
   }) async {
     final plugin = FlutterLocalNotificationsPlugin();
-    const settings = InitializationSettings(
-      android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+    final settings = InitializationSettings(
+      android: const AndroidInitializationSettings('@mipmap/ic_launcher'),
       iOS: DarwinInitializationSettings(
-        requestAlertPermission: false,
-        requestBadgePermission: false,
-        requestSoundPermission: false,
-        requestCriticalPermission: false,
+        requestAlertPermission: requestPermissions,
+        requestBadgePermission: requestPermissions,
+        requestSoundPermission: requestPermissions,
+        requestCriticalPermission: requestPermissions,
       ),
     );
     await plugin.initialize(settings: settings);
@@ -102,7 +119,10 @@ class FirebaseMessagingService {
     if (!firebaseMessagingEnabled) return;
     // Standard FCM notification payloads are intentionally ignored.
     final data = message.data;
-    if (data.isEmpty) return;
+    if (data.isEmpty || message.notification != null) {
+      debugPrint('Ignoring standard FCM notification payload; using data-only order alerts.');
+      return;
+    }
 
     await _initializeLocalNotifications(requestPermissions: false);
     final title = data['title']?.trim().isNotEmpty == true

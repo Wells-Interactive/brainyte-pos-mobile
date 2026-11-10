@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/api/api_client.dart';
+import '../../core/constants/app_constants.dart';
 import '../../core/services/navigation_menu_service.dart';
 
 class RoleBasedDrawer extends StatelessWidget {
@@ -39,6 +41,25 @@ class RoleBasedDrawer extends StatelessWidget {
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
                   ),
+                ),
+                FutureBuilder<String?>(
+                  future: SharedPreferences.getInstance().then(
+                    (preferences) =>
+                        preferences.getString(AppConstants.restaurantNameKey),
+                  ),
+                  builder: (context, snapshot) {
+                    final restaurantName = snapshot.data;
+                    return Text(
+                      restaurantName?.isNotEmpty == true
+                          ? restaurantName!
+                          : role == 'super_admin'
+                          ? 'Platform-wide access'
+                          : '',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(color: Colors.white70),
+                    );
+                  },
                 ),
               ],
             ),

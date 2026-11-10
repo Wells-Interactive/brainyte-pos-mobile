@@ -9,6 +9,7 @@ import '../../core/models/admin_stats.dart';
 import '../../core/utils/currency.dart';
 import '../../widgets/loading_indicator.dart';
 import '../../widgets/role_based_drawer.dart';
+import '../../widgets/staff_list_card.dart';
 
 class OwnerDashboardScreen extends StatefulWidget {
   const OwnerDashboardScreen({super.key});
@@ -160,6 +161,8 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
                 ),
               ),
             ),
+            const SizedBox(height: 16),
+            const StaffListCard(),
           ],
         ),
       ),
