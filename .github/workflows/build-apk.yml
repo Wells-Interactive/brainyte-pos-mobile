@@ -95,21 +95,21 @@ jobs:
         run: |
           echo "Checking generated Android App APK..."
 
-          ls -lah build/app/outputs/bundle/release/
+          ls -lah build/app/outputs/flutter-apk/
 
-          if [ ! -s build/app/outputs/bundle/release/app-release.apk ]; then
+          if [ ! -s build/app/outputs/flutter-apk/app-release.apk ]; then
             echo "ERROR: The APK file was not generated."
             exit 1
           fi
 
           echo "APK successfully generated."
-          du -h build/app/outputs/bundle/release/app-release.apk
+          du -h build/app/outputs/flutter-apk/app-release.apk
 
       - name: Upload Signed Apk
         uses: actions/upload-artifact@v4
         with:
           name: brainyte-pos-android-release-apk
-          path: build/app/outputs/bundle/release/app-release.apk
+          path: build/app/outputs/flutter-apk/app-release.apk
           if-no-files-found: error
           compression-level: 0
           retention-days: 30
