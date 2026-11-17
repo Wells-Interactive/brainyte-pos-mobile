@@ -38,35 +38,9 @@ From **waiters taking table orders**, to **kitchen and bar teams processing orde
 The Flutter app uses the existing PHP/MySQL backend. Build a client for each restaurant deployment with that installation's HTTP(S) backend origin:
 
 
-# 🚀 One App Does It All  (Currently working on all restaurants to use this same app)
+# 🚀 One App Does It All  (Now all restaurants can use one App)
 
 Brainyte POS connects the restaurant's major operational areas in one application.
-
-```text
-                         🍽️ BRAINYTE POS
-                              │
-        ┌─────────────────────┼─────────────────────┐
-        │                     │                     │
-     👨‍🍳 Waiter             👨‍🍳 Kitchen           🍹 Bar
-        │                     │                     │
-     Tables                Food Orders          Drink Orders
-     Orders                Preparing            Preparing
-     Menu                  Ready                Ready
-        │                     │                     │
-        └─────────────────────┼─────────────────────┘
-                              │
-                       📦 Order System
-                              │
-              ┌───────────────┼───────────────┐
-              │               │               │
-           👑 Admin        📊 Manager       🏢 Owner
-              │               │               │
-           Reports          Monitoring       Overview
-                              │
-                        🚚 Delivery
-                              │
-                    Customer + Rider
-```
 
 Different restaurant roles can access the functions relevant to them while working from the same centralized system.
 
@@ -178,37 +152,7 @@ The application supports **Server-Sent Events (SSE)** for live events with autom
 
 If the live event connection is unavailable, the application automatically falls back to periodic status polling.
 
----
-
-# 🧾 Order Workflow
-
-```text
-🪑 Select Table
-       ↓
-🍔 Select Food / Drinks
-       ↓
-📝 Add Instructions
-       ↓
-🛒 Review Order
-       ↓
-📤 Submit Order
-       ↓
-🍳 Kitchen / 🍹 Bar
-       ↓
-⏳ Pending
-       ↓
-👨‍🍳 Preparing
-       ↓
-✅ Ready
-       ↓
-🍽️ Served
-       ↓
-✔️ Completed
-       ↓
-💰 Close Table
-```
-
----
+-----
 
 # 🖨️ Thermal Printing
 
