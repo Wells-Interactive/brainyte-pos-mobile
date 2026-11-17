@@ -38,35 +38,9 @@ From **waiters taking table orders**, to **kitchen and bar teams processing orde
 The Flutter app uses the existing PHP/MySQL backend. Build a client for each restaurant deployment with that installation's HTTP(S) backend origin:
 
 
-# 🚀 One App Does It All  (Currently working on all restaurants to use this same app)
+# 🚀 One App Does It All  (Now all restaurants can use one App)
 
 Brainyte POS connects the restaurant's major operational areas in one application.
-
-```text
-                         🍽️ BRAINYTE POS
-                              │
-        ┌─────────────────────┼─────────────────────┐
-        │                     │                     │
-     👨‍🍳 Waiter             👨‍🍳 Kitchen           🍹 Bar
-        │                     │                     │
-     Tables                Food Orders          Drink Orders
-     Orders                Preparing            Preparing
-     Menu                  Ready                Ready
-        │                     │                     │
-        └─────────────────────┼─────────────────────┘
-                              │
-                       📦 Order System
-                              │
-              ┌───────────────┼───────────────┐
-              │               │               │
-           👑 Admin        📊 Manager       🏢 Owner
-              │               │               │
-           Reports          Monitoring       Overview
-                              │
-                        🚚 Delivery
-                              │
-                    Customer + Rider
-```
 
 Different restaurant roles can access the functions relevant to them while working from the same centralized system.
 
@@ -86,7 +60,6 @@ Get the latest Android version of Brainyte POS Mobile.
 </p>
  **Android:** Download the latest version from Google Play Store, You must have been added to the list to see it Or wait till release date.
 NOTE: This Version is only for demonstration, licensed users will need their own console, but we're working to make this app work for all restaurants.
-
 <table>
   <tr>
     <td><img src="assets/images/ss1.jpg" width="220"></td>
@@ -178,37 +151,7 @@ The application supports **Server-Sent Events (SSE)** for live events with autom
 
 If the live event connection is unavailable, the application automatically falls back to periodic status polling.
 
----
-
-# 🧾 Order Workflow
-
-```text
-🪑 Select Table
-       ↓
-🍔 Select Food / Drinks
-       ↓
-📝 Add Instructions
-       ↓
-🛒 Review Order
-       ↓
-📤 Submit Order
-       ↓
-🍳 Kitchen / 🍹 Bar
-       ↓
-⏳ Pending
-       ↓
-👨‍🍳 Preparing
-       ↓
-✅ Ready
-       ↓
-🍽️ Served
-       ↓
-✔️ Completed
-       ↓
-💰 Close Table
-```
-
----
+-----
 
 # 🖨️ Thermal Printing
 
