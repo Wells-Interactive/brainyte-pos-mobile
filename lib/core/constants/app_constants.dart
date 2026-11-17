@@ -2,7 +2,7 @@ class AppConstants {
   static const String appName = 'Brainyte POS';
   static const String baseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'https://129.153.14.108/brainytepos',
+    defaultValue: 'https://129.153.14.108',
   );
   static const String authTokenKey = 'auth_token';
   static const String refreshTokenKey = 'refresh_token';
